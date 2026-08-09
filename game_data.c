@@ -1,6 +1,7 @@
 #include "established_parameters.h"
 #include "initialization_structures.h"
 #include "physics.h"
+#include "structures.h"
 
 //-------------EXTERNAL VAR DECLARATIONS------------
 extern Ball ball;
@@ -10,7 +11,8 @@ extern const char* screen[SCREEN_HEIGHT][SCREEN_WIDTH];
 
 
 //-------------GLOBAL VAR DECLARATIONS------------
-short int game_state = 1;
+GameState game_state = STATE_INTRO; // was: short int = 1. Starts at the title screen now.
+char username[MAX_USERNAME] = ""; // for the top score file later
 int score = 0;
 short int lives = 3;
 short int level = 1;

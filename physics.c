@@ -1,11 +1,12 @@
 #include "established_parameters.h"
 #include "initialization_structures.h"
 #include "physics.h"
+#include "structures.h"
 //-------------EXTERNAL VAR DECLARATIONS------------
 extern Ball ball;
 extern Brick brick[BRICK_ROWS][BRICK_COLUMNS];
 extern Paddle paddle;
-extern short int game_state;
+extern GameState game_state;
 extern int score;
 extern short int lives;
 extern short int level;
@@ -30,7 +31,7 @@ void ball_update() {
         gameInicialization_ball();
         }
         else{
-            game_state = 0;
+            game_state = STATE_QUIT; // 0 now means STATE_INTRO, so it has to be named
         }
 
     }

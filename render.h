@@ -8,3 +8,8 @@ void set_bricks();
 void set_paddle();
 void draw_all();
 #endif
+
+//MENU SCREENS
+void draw_intro();
+void draw_username();
+void draw_pause();

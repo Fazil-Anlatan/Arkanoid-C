@@ -1,14 +1,18 @@
 #include "established_parameters.h"
+#include "structures.h"
 #include "initialization_structures.h"
+#include "application_state.h"
+
 //-------------EXTERNAL VAR DECLARATIONS------------
 extern Ball ball;
 extern Brick brick[BRICK_ROWS][BRICK_COLUMNS];
 extern Paddle paddle;
-extern short int game_state;
+extern GameState game_state;
 extern int score;
 extern short int lives;
 extern short int level;
 extern const char* screen[SCREEN_HEIGHT][SCREEN_WIDTH];
+extern char username[MAX_USERNAME];
 //------- RENDERS -------
 
 void set_blank_screen() {
@@ -104,3 +108,119 @@ void draw_all() {
 }
 
 //------- END RENDER -------
+
+//MENU SCREENS
+// Pure front-end: these ask application_state.c what to show and turn the answer into characters. They decide nothing.
+
+// name of the game
+#define TITLE_ROWS 5
+#define TITLE_WIDTH 34
+static const char *title_art[TITLE_ROWS] = {
+    "████ █    ████ █  █ ████ ████ ███ ",
+    "█    █    █  █ ██ █ █  █  ██  █  █",
+    "█    █    █  █ █ ██ █  █  ██  █  █",
+    "█    █    █  █ █  █ █  █  ██  █  █",
+    "████ ████ ████ █  █ ████ ████ ███ "
+};
+
+// menu renderer
+static void draw_menu_items(const MenuItem *items, int count, int y, int x) {
+    int i;
+    int sel = active_selection();
+
+    if (items == NULL) {
+        return;
+    }
+
+    for (i = 0; i < count; i++) {
+        if (i == sel) {
+            attron(A_REVERSE);
+        }
+    
+        mvprintw(y + i * 2, x, "  %-12s  ", items[i].label);
+        if (i == sel) {
+            attroff(A_REVERSE);
+        }
+    }
+}
+void draw_intro() {
+    int count, i;
+    const MenuItem *menu = active_menu(&count);
+
+    erase();
+
+    for (i = 0; i < TITLE_ROWS; i++) {
+        mvprintw(6 + i, (SCREEN_WIDTH - TITLE_WIDTH) / 2, "%s", title_art[i]);
+    }
+    mvprintw(13, 14, "a brick breaker in C");
+    mvprintw(15, 8, "──────────────────────────────────");
+
+    draw_menu_items(menu, count, 19, 17);
+
+    mvprintw(28, 6, "Up / Down to move, Enter to select");
+    refresh();
+}
+
+
+void draw_username() {
+    int count;
+    const MenuItem *menu = active_menu(&count);
+
+    erase();
+
+    mvprintw(6, 16, "WHO IS PLAYING?");
+    mvprintw(8, 8, "──────────────────────────────────");
+    mvprintw(11, 12, "Name: %s_", username);
+    mvprintw(13, 12, "type it, Backspace to fix");
+
+    draw_menu_items(menu, count, 18, 17);
+
+    mvprintw(28, 6, "Leave it empty and you are %s", DEFAULT_USERNAME);
+    refresh();
+}
+
+// Unlike the other two this one is an overlay: it redraws the frozen board first and then paints a panel on top, so the player keeps their read on where the ball and paddle were. draw_all() ends with its own refresh(); the second refresh() below is what shows the panel, and curses only pushes changed cells.
+void draw_pause() {
+    int count, i, j;
+    const MenuItem *menu = active_menu(&count);
+
+    int top = 13;
+    int left = 7;
+    int width = 36;
+    int height = 20;
+
+    draw_all(); // the frozen game underneath
+
+    for (i = 1; i < height - 1; i++) {
+        for (j = 1; j < width - 1; j++) {
+            mvprintw(top + i, left + j, " ");
+        }
+    }
+
+    for (j = 1; j < width - 1; j++) {
+        mvprintw(top, left + j, "═");
+        mvprintw(top + height - 1, left + j, "═");
+    }
+    for (i = 1; i < height - 1; i++) {
+        mvprintw(top + i, left, "║");
+        mvprintw(top + i, left + width - 1, "║");
+    }
+    mvprintw(top, left, "╔");
+    mvprintw(top, left + width - 1, "╗");
+    mvprintw(top + height - 1, left, "╚");
+    mvprintw(top + height - 1, left + width - 1, "╝");
+
+    mvprintw(top + 2, left + 15, "PAUSED");
+
+    mvprintw(top + 4, left + 2, "%s!", username);
+    mvprintw(top + 5, left + 2, "You are at the level %d and you", level);
+    mvprintw(top + 6, left + 2, "have %d lives left, get back to", lives);
+    mvprintw(top + 7, left + 2, "your ship and continue bouncing!");
+
+    draw_menu_items(menu, count, top + 10, left + 9);
+
+    mvprintw(top + height - 3, left + 4, "P or Continue to resume");
+    refresh();
+}
+
+//------- END MENU SCREENS -------
