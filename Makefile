@@ -1,6 +1,15 @@
-#FOR A WIN .EXE PROGRAM (make on the terminal)not working btw
-arkanoid_win: main.o game_data.o application_state.o  initialization_structures.o physics.o render.o
-	gcc main.o game_data.o application_state.o initialization_structures.o physics.o render.o -o arkanoid_win -Wall -lpdcurses
+ifeq ($(OS),Windows_NT)
+	EXE = arkanoid.exe
+	LIBS = -lpdcurses
+
+else
+	EXE = arkanoid
+	LIBS = -lncursesw
+endif
+
+
+$(EXE): main.o game_data.o application_state.o  initialization_structures.o physics.o render.o
+	gcc main.o game_data.o application_state.o initialization_structures.o physics.o render.o -o $(EXE) -Wall $(LIBS)
 main.o: main.c established_parameters.h game_data.h initialization_structures.h physics.h render.h
 	gcc main.c -c
 game_data.o: game_data.c game_data.h initialization_structures.h physics.h established_parameters.h
