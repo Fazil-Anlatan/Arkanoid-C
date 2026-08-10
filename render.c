@@ -13,6 +13,8 @@ extern short int lives;
 extern short int level;
 extern const char* screen[SCREEN_HEIGHT][SCREEN_WIDTH];
 extern char username[MAX_USERNAME];
+//-------------LOCAL FUCTION DECLARATIONS------------
+void print_info();
 //------- RENDERS -------
 
 void set_blank_screen() {
@@ -87,12 +89,14 @@ void set_bricks () {
 
 void draw_all() {
     //set screen
+    clear();
     set_blank_screen();
     set_borders();
     set_paddle();
     set_ball();
     set_bricks();
-
+    print_info();
+    
     //print screen
     int i, j;
     for (i=0; i < SCREEN_HEIGHT; i++) {
@@ -100,12 +104,20 @@ void draw_all() {
             mvprintw(i, j, "%s", screen[i][j]);
         }
     }
-    mvprintw(SCREEN_HEIGHT, 0, "Score: %d", score);
-    mvprintw(SCREEN_HEIGHT + 1, 0, "Lives: %s",(lives==3?"♥ ♥ ♥":(lives==2?"♥ ♥":(lives==1?"♥":"0"))));
-    mvprintw(SCREEN_HEIGHT + 2, 0, "Level: %d", level);
-
     refresh();//updates what's shown on console
 }
+
+void print_info(){
+    char* lives_s= (lives==3?"♥ ♥ ♥":(lives==2?"♥ ♥":(lives==1?"♥":"0")));
+        mvprintw(SCREEN_HEIGHT, 0, "╔═════════════════════════════════════╗");
+        mvprintw(SCREEN_HEIGHT+1, 0, "║Score: %-30d║", score);
+        mvprintw(SCREEN_HEIGHT+2, 0,"║");//finishes the rectangle 
+        mvprintw(SCREEN_HEIGHT+2, 38,"║");//" 
+        mvprintw(SCREEN_HEIGHT + 2, 1,"Lives: %s",lives_s);
+        mvprintw(SCREEN_HEIGHT + 3, 0, "║Level: %-30d║", level);
+        mvprintw(SCREEN_HEIGHT+4, 0,"╚═════════════════════════════════════╝");
+    }
+ 
 
 //------- END RENDER -------
 
