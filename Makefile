@@ -4,7 +4,7 @@ ifeq ($(OS),Windows_NT)
 
 else
 	EXE = arkanoid
-	LIBS = -lncursesw
+	LIBS = -lncursesw -lm
 endif
 
 
