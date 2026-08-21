@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 //-------------GLOBAL VAR DECLARATIONS------------
+Capsule capsule[MAX_CAPSULES_PER_LEVEL];
 Ball ball;
 Brick brick[BRICK_ROWS][BRICK_COLUMNS];
 Paddle paddle;
@@ -17,19 +18,20 @@ void gameInicialization() {
    gameInicialization_ball();
    gameInicialization_paddle();
    gameInicialization_bricks();
+   gameInicialization_capsules();
 }
 
 void gameInicialization_ball() { //isn't finished yed
     ball.x = SCREEN_WIDTH / 2;
     ball.y = SCREEN_HEIGHT / 2;
 
-    ball.vx = ((time(NULL) % 8) + 1) / 10.0; //velocidad en x entre 0.1 y 0.9
+    ball.vx = ((time(NULL) % 5) + 1) / 10.0; //x velocity between 0.1 and 0.5
   
-    //el vector velocidad debe tener un modulo de 1.5
-    //se calcula vy usando el teorema de Pitagoras: vy = sqrt(1.5^2 - vx^2)
-    ball.vy = sqrt(pow(1.5, 2) - pow(ball.vx, 2)); //la norma del vec velocidad va a tener que ser un define por mala practica
+    //Total velocity is a vector of 0.75
+    //Calculated using the pythagorean theorem
+    ball.vy = sqrt(pow(1.5, 2) - pow(ball.vx, 2)); //We need to make another constant for the length of the vector.
     
-    //direcciones aleatorias dependiendo de time(NULL)
+    //random directions
     if (time(NULL) % 2 == 1) {
         ball.vx *= -1;
     }
@@ -49,9 +51,25 @@ void gameInicialization_bricks() {
     for (i = 0; i < BRICK_ROWS; i++) {
         for (j = 0; j < BRICK_COLUMNS; j++) {
             brick[i][j].health = 1;
+            brick[i][j].contains_capsule = 1; //JUST FOR TESTING
         }
     }
 
 }
 
+void gameInicialization_capsules(){
+    int i,j,k;
+    k = 0;
+    for (i = 0; i < BRICK_ROWS; i++) {
+        for (j = 0; j < BRICK_COLUMNS; j++) {
+            if ((brick[i][j].contains_capsule > 0) && (k < MAX_CAPSULES_PER_LEVEL)) {
+                capsule[k].x = 0;
+                capsule[k].y = 0;
+                capsule[k].vy = 0;
+                capsule[k].type = 0;
+                k++;
+            }
+        }
+    }
+}
 
