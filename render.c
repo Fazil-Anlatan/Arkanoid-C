@@ -7,6 +7,7 @@
 extern Ball ball;
 extern Brick brick[BRICK_ROWS][BRICK_COLUMNS];
 extern Paddle paddle;
+extern Capsule capsule[MAX_CAPSULES_PER_LEVEL];
 extern GameState game_state;
 extern int score;
 extern short int lives;
@@ -87,6 +88,16 @@ void set_bricks () {
     }
 }
 
+void set_capsule() {
+    int k;
+    for (k = 0; k < MAX_CAPSULES_PER_LEVEL; k++){
+        if (capsule[k].vy > 0) {
+            screen[(int)capsule[k].y][capsule[k].x] = "<";
+            screen[(int)capsule[k].y][capsule[k].x + 1] = ">";
+        }
+    }
+}
+
 void draw_all() {
     //set screen
     clear();
@@ -95,6 +106,7 @@ void draw_all() {
     set_paddle();
     set_ball();
     set_bricks();
+    set_capsule();
     print_info();
     
     //print screen
