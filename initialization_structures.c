@@ -30,7 +30,7 @@ void gameInicialization_ball() { //isn't finished yed
   
     //Total velocity is a vector of 0.75
     //Calculated using the pythagorean theorem
-    ball.vy = sqrt(pow(1.5, 2) - pow(ball.vx, 2)); //We need to make another constant for the length of the vector.
+    ball.vy = sqrt(pow(0.75, 2) - pow(ball.vx, 2)); //We need to make another constant for the length of the vector.
     
     //random directions
     if (time(NULL) % 2 == 1) {
