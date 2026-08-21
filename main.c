@@ -65,6 +65,7 @@ int main () {
                 draw_all();
                 ball_update();
                 paddle_update(c);
+                capsule_update();
                 level_up();
                 break;
 
@@ -88,7 +89,7 @@ int main () {
             flushinp();
         }
 
-        sleep_ms(50); 
+        sleep_ms(25); 
     }
     endwin();
     printf("Game Over!\n");
