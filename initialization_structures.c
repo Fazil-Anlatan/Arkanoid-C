@@ -9,6 +9,7 @@ Capsule capsule[MAX_CAPSULES_PER_LEVEL];
 Ball ball;
 Brick brick[BRICK_ROWS][BRICK_COLUMNS];
 Paddle paddle;
+int next_capsule; //global declaration of next_capsule for capsule spawn and keeping track.
 
 const char* screen[SCREEN_HEIGHT][SCREEN_WIDTH];
 
@@ -59,6 +60,7 @@ void gameInicialization_bricks() {
 
 void gameInicialization_capsules(){
     int i,j,k;
+    next_capsule = 0;
     k = 0;
     for (i = 0; i < BRICK_ROWS; i++) {
         for (j = 0; j < BRICK_COLUMNS; j++) {
