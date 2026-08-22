@@ -6,6 +6,7 @@ void set_borders();
 void set_ball();
 void set_bricks();
 void set_paddle();
+void set_capsule();
 void draw_all();
 #endif
 

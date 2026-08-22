@@ -5,8 +5,11 @@
     #define SCREEN_HEIGHT 48
 
     #define PADDLE_WIDTH_0 12
-    #define BRICK_MAX_ROWS 4 // This is the maximum number of rows of bricks that can be displayed on the screen. 
-    #define BRICK_ROWS BRICK_MAX_ROWS // We should make it that the number of rows increase with the level, but 1 is the initial value.
+
+    #define MAX_CAPSULES_PER_LEVEL 8
+    #define MAX_ANGLE 70.0f * 3.14159265f / 180.0f
+
+    #define BRICK_ROWS 1 // We should make it that the number of rows increase with the level, but 1 is the initial value.
     #define BRICK_COLUMNS 8
   
     #define BRICK_WIDTH 6

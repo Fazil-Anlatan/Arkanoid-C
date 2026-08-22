@@ -33,6 +33,7 @@ void level_up(int c) {
                 level++;
                 gameInicialization_bricks();
                 gameInicialization_ball();
+                gameInicialization_capsules();
     }
 }
 
