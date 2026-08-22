@@ -20,7 +20,7 @@ void advance_score_calc() // for bonus
 {}
 
 //------- LEVEL UP -------
-void level_up() {
+void level_up(int c) {
 // if the combined health of all bricks is 0, level up.
     int j, i;
     int combined_brick_health = 0;
@@ -29,7 +29,7 @@ void level_up() {
             combined_brick_health += brick[i][j].health;
         }
     }
-    if ((combined_brick_health == 0)){ //falta la tecla para pasar de nivel (modo desarrollador )pero primero tengo que dividir el codigo
+    if ((combined_brick_health == 0)||(c=='l')||(c=='L')){ //falta la tecla para pasar de nivel (modo desarrollador )pero primero tengo que dividir el codigo
                 level++;
                 gameInicialization_bricks();
                 gameInicialization_ball();

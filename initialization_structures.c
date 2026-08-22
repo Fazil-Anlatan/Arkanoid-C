@@ -10,7 +10,8 @@ Brick brick[BRICK_ROWS][BRICK_COLUMNS];
 Paddle paddle;
 
 const char* screen[SCREEN_HEIGHT][SCREEN_WIDTH];
-
+//-------------EXTERNAL VAR DECLARATIONS------------
+extern int level;
 //Initial values for game objects
 
 void gameInicialization() {
@@ -45,13 +46,60 @@ void gameInicialization_paddle() {
 }
 
 void gameInicialization_bricks() {
-    int i,j;
+    int i, j;
+    
+    const int l1_pattern[BRICK_ROWS][BRICK_COLUMNS] = {
+        {1, 1, 0, 1, 1, 0, 1, 1},
+        {1, 1, 0, 1, 1, 0, 1, 1},
+        {1, 1, 0, 1, 1, 0, 1, 1},
+        {1, 1, 0, 1, 1, 0, 1, 1}
+    };
+
     for (i = 0; i < BRICK_ROWS; i++) {
         for (j = 0; j < BRICK_COLUMNS; j++) {
-            brick[i][j].health = 1;
+            brick[i][j].health = 0;
         }
     }
 
+    switch (level) {
+        case 1:
+            for (i = 0; i < BRICK_ROWS; i++) { // Use the predefined pattern for level 1 (similar to the real game)
+                for (j = 0; j < BRICK_COLUMNS; j++) {
+                    brick[i][j].health = l1_pattern[i][j];
+                }
+            }
+            break;
+
+        case 2:     //inverted triangle of bricks
+            for (i = 0; i < BRICK_MAX_ROWS; i++) { 
+                for (j = 0; j < BRICK_COLUMNS; j++) {
+                    if (j >= i && j < BRICK_COLUMNS - i) {
+                        brick[i][j].health = 1;
+                    }
+                }
+            }
+            break;
+            
+            break;
+
+        case 3:
+            for (i = 1; i < BRICK_ROWS+3; i++) { //square of bricks
+                for (j = 1; j < BRICK_COLUMNS-1; j++) {
+                    brick[i][j].health = 1;
+                }
+            }
+            break;
+
+        default: // For levels greater than 3, a random pattern of bricks will be generated
+            char more_rows = (level -3)%BRICK_ROWS; // this will ad more rows of bricks if you pass level 3,
+            for (i = 0; i < BRICK_ROWS + more_rows; i++) {
+                for (j = 0; j < BRICK_COLUMNS; j++) {
+                    brick[i][j].health = (rand() % 10 < 7) ? 1 : 0; //70 % of chace to generate a brick in 4 rows and 8 columns
+                }
+            }
+            break;
+    }
 }
+
 
 

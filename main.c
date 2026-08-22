@@ -65,7 +65,7 @@ int main () {
                 draw_all();
                 ball_update();
                 paddle_update(c);
-                level_up();
+                level_up(c);
                 break;
 
             case STATE_PAUSED:

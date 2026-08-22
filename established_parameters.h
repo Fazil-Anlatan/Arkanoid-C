@@ -5,9 +5,10 @@
     #define SCREEN_HEIGHT 48
 
     #define PADDLE_WIDTH_0 12
-
-    #define BRICK_ROWS 1 // We should make it that the number of rows increase with the level, but 1 is the initial value.
+    #define BRICK_MAX_ROWS 4 // This is the maximum number of rows of bricks that can be displayed on the screen. 
+    #define BRICK_ROWS BRICK_MAX_ROWS // We should make it that the number of rows increase with the level, but 1 is the initial value.
     #define BRICK_COLUMNS 8
+  
     #define BRICK_WIDTH 6
     #define BRICK_HEIGHT 2
     #define MAX_USERNAME 16 // buffer size for the username
