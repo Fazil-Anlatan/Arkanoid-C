@@ -13,8 +13,8 @@
     #define BRICK_COLUMNS 8
     #define BRICK_WIDTH 6
     #define BRICK_HEIGHT 2
-    #define MAX_USERNAME 16 // buffer size for the username
-    #define DEFAULT_USERNAME "Player" // used if Play is pressed with no name typed
+    #define MAX_USERNAME 16 // max lenght for the username
+    #define DEFAULT_USERNAME "Player" // In case no username has been typed
 
     #ifdef _WIN32 //FOR A WIN USER
         #include <windows.h>

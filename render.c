@@ -133,8 +133,11 @@ void print_info(){
 
 //------- END RENDER -------
 
-//MENU SCREENS
-// Pure front-end: these ask application_state.c what to show and turn the answer into characters. They decide nothing.
+// -------- Menu Screens -------
+
+/* Three Functions to draw the menu screens, they ask which menu is active and print it.
+The intro and username screens wipe the screen first, but the pause screen draws the game board and then puts a box on top, so it can still be seen where the ball was frozen. 
+The sentence is split into four lines by hand because mvprintw does not wrap text, it just cuts it off at the edge */
 
 // name of the game
 #define TITLE_ROWS 5
@@ -203,7 +206,6 @@ void draw_username() {
     refresh();
 }
 
-// Unlike the other two this one is an overlay: it redraws the frozen board first and then paints a panel on top, so the player keeps their read on where the ball and paddle were. draw_all() ends with its own refresh(); the second refresh() below is what shows the panel, and curses only pushes changed cells.
 void draw_pause() {
     int count, i, j;
     const MenuItem *menu = active_menu(&count);
@@ -247,4 +249,4 @@ void draw_pause() {
     refresh();
 }
 
-//------- END MENU SCREENS -------
+//------- End Menu Screens ---------

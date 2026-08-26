@@ -11,7 +11,7 @@ extern const char* screen[SCREEN_HEIGHT][SCREEN_WIDTH];
 
 
 //-------------GLOBAL VAR DECLARATIONS------------
-GameState game_state = STATE_INTRO; // was: short int = 1. Starts at the title screen now.
+GameState game_state = STATE_INTRO;
 char username[MAX_USERNAME] = ""; // for the top score file later
 int score = 0;
 short int lives = 3;
