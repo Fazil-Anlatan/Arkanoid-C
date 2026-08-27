@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+
+# build output
+*.o
+arkanoid
+arkanoid.exe
+
+# game data, different on every machine
+scores.txt

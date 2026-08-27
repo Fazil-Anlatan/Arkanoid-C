@@ -98,6 +98,10 @@ Instead of game_state being 1 or 0 it now holds one of five screens. */
 
         sleep_ms(25); 
     }
+
+     if (score > 0) {   // added score saver right before the loop ends
+        save_score();
+    }
     endwin();
     printf("Game Over!\n");
     

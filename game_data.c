@@ -2,6 +2,7 @@
 #include "initialization_structures.h"
 #include "physics.h"
 #include "structures.h"
+#include <stdio.h>
 
 //-------------EXTERNAL VAR DECLARATIONS------------
 extern Ball ball;
@@ -38,3 +39,23 @@ void level_up() {
 }
 
 //------- END LEVEL UP -------
+
+//----- History Log ------
+/* adds one line to scores.txt every time a game ends. Format is: username score level  */
+
+void save_score() {
+
+    FILE *fp;  
+
+    fp = fopen("scores.txt", "a");   // "a" = adding mode
+
+    if (fp == NULL) {      // fopen returns NULL if it failed so the game never crashes
+        return;                        
+    }
+
+    fprintf(fp, "%s %d %d\n", username, score, level);
+
+    fclose(fp);    // flushes the text to disk
+}
+
+//---- End History Log-------
