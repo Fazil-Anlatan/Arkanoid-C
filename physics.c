@@ -34,7 +34,7 @@ void ball_update() {
         gameInicialization_ball();
         }
         else{
-            game_state = STATE_QUIT; // 0 now means STATE_INTRO, so it has to be named
+            game_state = STATE_QUIT; 
         }
 
     }

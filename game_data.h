@@ -2,4 +2,5 @@
 #define G_DATA
 void level_up(int c);
 void advance_score_calc();
+void save_score();
 #endif

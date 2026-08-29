@@ -4,7 +4,12 @@ ifeq ($(OS),Windows_NT)
 
 else
 	EXE = arkanoid
-	LIBS = -lncursesw -lm
+	UNAME_S = $(shell uname -s)
+	ifeq ($(UNAME_S),Darwin)
+		LIBS = -lncurses -lm
+	else
+		LIBS = -lncursesw -lm
+	endif
 endif
 
 

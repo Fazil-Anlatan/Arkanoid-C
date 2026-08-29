@@ -7,6 +7,7 @@
 #include "game_data.h"
 #include "render.h"
 #include "application_state.h"
+
 //-------------EXTERNAL VAR DECLARATIONS------------
 extern Ball ball;
 extern Brick brick[BRICK_ROWS][BRICK_COLUMNS];
@@ -16,9 +17,13 @@ extern int score;
 extern short int lives;
 extern short int level;
 extern const char* screen;
+
+
 //------- FUNCTION DECLARATIONS -------
 
 //------- END FUNCTION DECLARATIONS -------
+
+
 int main () {
 
     setlocale(LC_ALL, ""); //for the characters
@@ -33,10 +38,12 @@ int main () {
     gameInicialization();
 
     //------- MAIN LOOP -------
-    // main() is no longer the game loop, it is a router. One frame is: read a key, hand it to whichever screen is active, draw that screen, sleep.
+    
+/* I changed the loop so it first checks which screen we are on, and only then does the work for that screen. Before it could only play the game.
+Instead of game_state being 1 or 0 it now holds one of five screens. */
+
     while (game_state != STATE_QUIT) {
 
-        // remembered so we can tell at the end of the frame whether this key caused a screen change
         GameState previous_state = game_state;
 
         int c = getch();
@@ -90,6 +97,10 @@ int main () {
         }
 
         sleep_ms(25); 
+    }
+
+     if (score > 0) {   // added score saver right before the loop ends
+        save_score();
     }
     endwin();
     printf("Game Over!\n");

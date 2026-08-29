@@ -10,7 +10,7 @@ void set_capsule();
 void draw_all();
 #endif
 
-//MENU SCREENS
+// Menu Screens
 void draw_intro();
 void draw_username();
 void draw_pause();

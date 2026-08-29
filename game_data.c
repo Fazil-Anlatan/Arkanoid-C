@@ -2,6 +2,7 @@
 #include "initialization_structures.h"
 #include "physics.h"
 #include "structures.h"
+#include <stdio.h>
 
 //-------------EXTERNAL VAR DECLARATIONS------------
 extern Ball ball;
@@ -11,7 +12,7 @@ extern const char* screen[SCREEN_HEIGHT][SCREEN_WIDTH];
 
 
 //-------------GLOBAL VAR DECLARATIONS------------
-GameState game_state = STATE_INTRO; // was: short int = 1. Starts at the title screen now.
+GameState game_state = STATE_INTRO;
 char username[MAX_USERNAME] = ""; // for the top score file later
 int score = 0;
 short int lives = 3;
@@ -38,3 +39,23 @@ void level_up(int c) {
 }
 
 //------- END LEVEL UP -------
+
+//----- History Log ------
+/* adds one line to scores.txt every time a game ends. Format is: username score level  */
+
+void save_score() {
+
+    FILE *fp;  
+
+    fp = fopen("scores.txt", "a");   // "a" = adding mode
+
+    if (fp == NULL) {      // fopen returns NULL if it failed so the game never crashes
+        return;                        
+    }
+
+    fprintf(fp, "%s %d %d\n", username, score, level);
+
+    fclose(fp);    // flushes the text to disk
+}
+
+//---- End History Log-------
