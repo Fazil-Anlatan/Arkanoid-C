@@ -1,6 +1,9 @@
 #ifndef G_DATA
 #define G_DATA
-void level_up(int c);
-void advance_score_calc();
-void save_score();
+#include "application_state.h"
+#include "initialization_structures.h"
+//------FUCTION DECLARATIONS-------------
+void game_data_init(Game *game); // sets the starting values that used to be global variable initializers
+void level_up(Game *game, int c);
+int advance_score_calc(int brick_y);
 #endif

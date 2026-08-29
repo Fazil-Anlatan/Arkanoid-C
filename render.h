@@ -1,16 +1,18 @@
 #ifndef RENDER
 #define RENDER
+#include "initialization_structures.h"
 
-void set_blank_screen();
-void set_borders();
-void set_ball();
-void set_bricks();
-void set_paddle();
-void set_capsule();
-void draw_all();
+void set_blank_screen(Game *game);
+void set_borders(Game *game);
+void set_ball(Game *game);
+void set_bricks(Game *game);
+void set_paddle(Game *game);
+void set_capsule(Game *game);
+void draw_all(Game *game);
+void draw_game_over(Game *game);
 #endif
 
-// Menu Screens
-void draw_intro();
-void draw_username();
-void draw_pause();
+//MENU SCREENS
+void draw_intro(Game *game);
+void draw_username(Game *game);
+void draw_pause(Game *game);

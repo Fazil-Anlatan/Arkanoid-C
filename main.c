@@ -1,90 +1,103 @@
 #include <stdio.h>
 #include <locale.h> //needed in linux for special characters
+#include <time.h>
 #include "established_parameters.h"
-#include "structures.h"
 #include "initialization_structures.h"
 #include "physics.h"
 #include "game_data.h"
 #include "render.h"
 #include "application_state.h"
-
-//-------------EXTERNAL VAR DECLARATIONS------------
-extern Ball ball;
-extern Brick brick[BRICK_ROWS][BRICK_COLUMNS];
-extern Paddle paddle;
-extern GameState game_state;
-extern int score;
-extern short int lives;
-extern short int level;
-extern const char* screen;
-
-
 //------- FUNCTION DECLARATIONS -------
+void draw_game_over(Game *game);
 
 //------- END FUNCTION DECLARATIONS -------
-
-
 int main () {
+    srand(time(NULL)); // seed the random number generator for capsules and brick patterns
+    Game game = {0}; // the only instance of the game's state; everything below gets a pointer to it instead of using globals
+    game_data_init(&game); // sets game_state, username, score, lives and level to their starting values
 
     setlocale(LC_ALL, ""); //for the characters
-    //------inicialization of ncurses-----         (I'M NOT SURE IF IT SHOULD BE HERE OR MAYBE JUST ONE FUNCTION ON ESTABLISHED PARAMETERS?) we have to discuss that
+    //------inicialization of ncurses-----         
     initscr();
+
+    start_color(); // initialize colors (ncurses)
+        
+        // Define color pairs init_pair (number, Text_Color, Background_Color)
+        init_pair(1, COLOR_RED, COLOR_BLACK);
+        init_pair(2, COLOR_GREEN, COLOR_BLACK);
+        init_pair(3, COLOR_YELLOW, COLOR_BLACK);
+        init_pair(4, COLOR_BLUE, COLOR_BLACK);
+        init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
+        init_pair(6, COLOR_CYAN, COLOR_BLACK);
+
     cbreak();
     noecho();
     curs_set(0);
     keypad(stdscr, TRUE);
     nodelay(stdscr, TRUE);
 
-    gameInicialization();
+    gameInicialization(&game);
 
     //------- MAIN LOOP -------
-    
-/* I changed the loop so it first checks which screen we are on, and only then does the work for that screen. Before it could only play the game.
-Instead of game_state being 1 or 0 it now holds one of five screens. */
+    // main() is no longer the game loop, it is a router. One frame is: read a key, hand it to whichever screen is active, draw that screen, sleep.
+    while (game.game_state != STATE_QUIT) {
 
-    while (game_state != STATE_QUIT) {
-
-        GameState previous_state = game_state;
+        // remembered so we can tell at the end of the frame whether this key caused a screen change
+        GameState previous_state = game.game_state;
 
         int c = getch();
 
-        switch (game_state) {
+        switch (game.game_state) {
 
             case STATE_INTRO:
-                app_state_update(c);
-                if (game_state == STATE_INTRO) {
-                    draw_intro();
+                app_state_update(&game, c);
+                if (game.game_state == STATE_INTRO) {
+                    draw_intro(&game);
                 }
                 break;
 
             case STATE_USERNAME:
-                app_state_update(c);
-                if (game_state == STATE_USERNAME) {
-                    draw_username();
+                app_state_update(&game, c);
+                if (game.game_state == STATE_USERNAME) {
+                    draw_username(&game);
                 }
                 break;
 
             case STATE_PLAYING:
                 if (c == 'p' || c == 'P') {
-                    enter_state(STATE_PAUSED);
+                    enter_state(&game, STATE_PAUSED);
                     break;
                 }
-                draw_all();
-                ball_update();
-                paddle_update(c);
-               capsule_update();
-                level_up(c);
+                draw_all(&game);
+                ball_update(&game);
+                paddle_update(&game, c);
+                capsule_update(&game);
+                level_up(&game, c);
+                timers_update(&game);
                 break;
+
+            case STATE_GAME_OVER:
+                draw_game_over(&game);
+                game.frame_counter++;
+                
+                // A 25ms por frame, 120 frames son ~3 segundos. 
+                // Luego de 3 segundos, volvemos a la pantalla de inicio.
+                if (game.frame_counter > 120) {
+                    enter_state(&game, STATE_INTRO);
+                }
+                break;
+
+
 
             case STATE_PAUSED:
                 if (c == 'p' || c == 'P') {
-                    enter_state(STATE_PLAYING);
+                    enter_state(&game, STATE_PLAYING);
                 }
                 else {
-                    app_state_update(c);
+                    app_state_update(&game, c);
                 }
-                if (game_state == STATE_PAUSED) {
-                    draw_pause();
+                if (game.game_state == STATE_PAUSED) {
+                    draw_pause(&game);
                 }
                 break;
 
@@ -92,21 +105,16 @@ Instead of game_state being 1 or 0 it now holds one of five screens. */
                 break;
         }
 
-        if (game_state != previous_state) {
+        if (game.game_state != previous_state) {
             flushinp();
         }
 
         sleep_ms(25); 
     }
-
-     if (score > 0) {   // added score saver right before the loop ends
-        save_score();
-    }
     endwin();
     printf("Game Over!\n");
     
 }
-
 
 
 

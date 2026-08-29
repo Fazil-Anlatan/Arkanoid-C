@@ -1,143 +1,187 @@
 #include "established_parameters.h"
-#include "structures.h"
 #include "initialization_structures.h"
 #include "application_state.h"
 
-//-------------EXTERNAL VAR DECLARATIONS------------
-extern Ball ball;
-extern Brick brick[BRICK_ROWS][BRICK_COLUMNS];
-extern Paddle paddle;
-extern Capsule capsule[MAX_CAPSULES_PER_LEVEL];
-extern GameState game_state;
-extern int score;
-extern short int lives;
-extern short int level;
-extern const char* screen[SCREEN_HEIGHT][SCREEN_WIDTH];
-extern char username[MAX_USERNAME];
 //-------------LOCAL FUCTION DECLARATIONS------------
-void print_info();
+void print_info(Game *game);
 //------- RENDERS -------
 
-void set_blank_screen() {
+void set_blank_screen(Game *game) {
     int i, j;
     for (i = 0; i < SCREEN_HEIGHT; i++) {
         for (j = 0; j < SCREEN_WIDTH ; j++) {
-            screen[i][j] = " ";
+            game->screen[i][j] = " ";
         }
     }
 }
 
-void set_borders() {
+void set_borders(Game *game) {
 
     //set roof
     int i;
     for (i = 1; i <= SCREEN_WIDTH; i++) {
-        screen[0][i] = "═";
+        game->screen[0][i] = "═";
     }
 
     //set upper corners
-    screen[0][0] = "╔";
-    screen[0][SCREEN_WIDTH-1] = "╗";
+    game->screen[0][0] = "╔";
+    game->screen[0][SCREEN_WIDTH-1] = "╗";
 
     //set sides
     int k;
     for (k = 1; k < SCREEN_HEIGHT; k++) {
-        screen[k][0] = "║";
-        screen[k][SCREEN_WIDTH - 1] = "║";
+        game->screen[k][0] = "║";
+        game->screen[k][SCREEN_WIDTH - 1] = "║";
     }
 
     //Bottom will remain uncovered
 }
 
-void set_paddle() {
+void set_paddle(Game *game) {
     int i;
-    for (i = 0; i < paddle.size; i++) {
-        int px = paddle.x + i;
-        screen[SCREEN_HEIGHT - 2][px] = "▀";
+    for (i = 0; i < game->paddle.size; i++) {
+        int px = game->paddle.x + i;
+        game->screen[SCREEN_HEIGHT - 2][px] = "▀";
     }
 }
 
-void set_ball () {
-    screen[(int)ball.y][(int)ball.x] = "●";
+void set_ball (Game *game) {
+    int i;
+    for (i = 0; i < game->active_balls; i++) {
+        game->screen[(int)game->ball[i].y][(int)game->ball[i].x] = "●";
+    }
 }
 
 
 
-void set_bricks () {
+void set_bricks (Game *game) {
     int i, j;
     for (i = 0; i < BRICK_ROWS; i++) {
         for (j = 0; j < BRICK_COLUMNS; j++) {
-
             int start_y = 1 + i * BRICK_HEIGHT;
             int start_x = 1 + j * BRICK_WIDTH;
-
+            
             int k, l;
-            //draws a brick
-            if (brick[i][j].health > 0) {
+            //draw the brick
+            if (game->brick[i][j].health > 0) {
                 for (k = 0; k < BRICK_HEIGHT; k++) {
                     for (l = 0; l < BRICK_WIDTH; l++) {
-                        screen[start_y + k][start_x + l] = "─";
+                        game->screen[start_y + k][start_x + l] = "─";
                     }
                 }
-                screen[start_y][start_x] = "┌";
-                screen[start_y][start_x + BRICK_WIDTH - 1] = "┐";
-                screen[start_y + BRICK_HEIGHT - 1][start_x] = "└";
-                screen[start_y + BRICK_HEIGHT - 1][start_x + BRICK_WIDTH - 1] = "┘";
+                game->screen[start_y][start_x] = "┌";
+                game->screen[start_y][start_x + BRICK_WIDTH - 1] = "┐";
+                game->screen[start_y + BRICK_HEIGHT - 1][start_x] = "└";
+                game->screen[start_y + BRICK_HEIGHT - 1][start_x + BRICK_WIDTH - 1] = "┘";
             }
         }
     }
 }
-
-void set_capsule() {
+void set_capsule(Game *game) {
     int k;
     for (k = 0; k < MAX_CAPSULES_PER_LEVEL; k++){
-        if (capsule[k].vy > 0) {
-            screen[(int)capsule[k].y][capsule[k].x] = "<";
-            screen[(int)capsule[k].y][capsule[k].x + 1] = ">";
+        if (game->capsule[k].vy > 0) {
+            game->screen[(int)game->capsule[k].y][game->capsule[k].x] = "<";
+            game->screen[(int)game->capsule[k].y][game->capsule[k].x + 1] = ">";
         }
     }
 }
 
-void draw_all() {
+void draw_all(Game *game) {
     //set screen
     clear();
-    set_blank_screen();
-    set_borders();
-    set_paddle();
-    set_ball();
-    set_bricks();
-    set_capsule();
-    print_info();
+    set_blank_screen(game);
+    set_borders(game);
+    set_paddle(game);
+    set_ball(game);
+    set_bricks(game);
+    set_capsule(game);
+    print_info(game);
     
     //print screen
     int i, j;
     for (i=0; i < SCREEN_HEIGHT; i++) {
         for (j=0; j < SCREEN_WIDTH; j++) {
-            mvprintw(i, j, "%s", screen[i][j]);
+            mvprintw(i, j, "%s", game->screen[i][j]);
+        }
+    }
+    // re-writes the bricks with colors, because the above code doesn't support colors. The color is stored in the brick structure.
+    for (i = 0; i < BRICK_ROWS; i++) {
+        for (j = 0; j < BRICK_COLUMNS; j++) {
+            if (game->brick[i][j].health > 0) {
+                int start_y = 1 + i * BRICK_HEIGHT;
+                int start_x = 1 + j * BRICK_WIDTH;
+                
+                // turn on the color for this brick
+                attron(COLOR_PAIR(game->brick[i][j].color));
+                
+                int k, l;
+                for (k = 0; k < BRICK_HEIGHT; k++) {
+                    for (l = 0; l < BRICK_WIDTH; l++) {
+                        mvprintw(start_y + k, start_x + l, "─");
+                    }
+                }
+                mvprintw(start_y, start_x, "┌");
+                mvprintw(start_y, start_x + BRICK_WIDTH - 1, "┐");
+                mvprintw(start_y + BRICK_HEIGHT - 1, start_x, "└");
+                mvprintw(start_y + BRICK_HEIGHT - 1, start_x + BRICK_WIDTH - 1, "┘");
+                
+                // turn off the color for this brick
+                attroff(COLOR_PAIR(game->brick[i][j].color));
+            }
         }
     }
     refresh();//updates what's shown on console
 }
 
-void print_info(){
-    char* lives_s= (lives==3?"♥ ♥ ♥":(lives==2?"♥ ♥":(lives==1?"♥":"0")));
+void print_info(Game *game){
+    char* lives_s= (game->lives==3?"♥ ♥ ♥":(game->lives==2?"♥ ♥":(game->lives==1?"♥":"0")));
         mvprintw(SCREEN_HEIGHT, 0, "╔═════════════════════════════════════╗");
-        mvprintw(SCREEN_HEIGHT+1, 0, "║Score: %-30d║", score);
+        mvprintw(SCREEN_HEIGHT+1, 0, "║Score: %-30d║", game->score);
         mvprintw(SCREEN_HEIGHT+2, 0,"║");//finishes the rectangle 
         mvprintw(SCREEN_HEIGHT+2, 38,"║");//" 
         mvprintw(SCREEN_HEIGHT + 2, 1,"Lives: %s",lives_s);
-        mvprintw(SCREEN_HEIGHT + 3, 0, "║Level: %-30d║", level);
+        mvprintw(SCREEN_HEIGHT + 3, 0, "║Level: %-30d║", game->level);
         mvprintw(SCREEN_HEIGHT+4, 0,"╚═════════════════════════════════════╝");
     }
  
 
 //------- END RENDER -------
+//---------GAME OVER ANIMATION
+void draw_game_over(Game *game) {
+    clear();
+    
+    // Titileo: Si la división da par mostramos, si da impar ocultamos.
+    // frame_counter / 10 hace que cambie la visibilidad cada 250ms aprox.
+    if ((game->frame_counter / 10) % 2 == 0) {
+        const char *art_game[5] = {
+            "[][][]  [][]  []   [] [][][]",
+            "[]     []  [] [][] [][] []    ",
+            "[] [][] [][][] [] [] [] [][][]",
+            "[]  [] []  [] []   [] []    ",
+            "[][][] []  [] []   [] [][][]"
+        };
+        
+        const char *art_over[5] = {
+            "[][][] []  [] [][][] [][][]",
+            "[]  [] []  [] []     []  []",
+            "[]  [] []  [] [][][] [][][]",
+            "[]  []  [][]  []     [] [] ",
+            "[][][]   []   [][][] []  []"
+        };
 
-// -------- Menu Screens -------
+        // Centrado en la pantalla (SCREEN_WIDTH=50, SCREEN_HEIGHT=48)
+        for (int i = 0; i < 5; i++) {
+            mvprintw(15 + i, 10, "%s", art_game[i]);
+            mvprintw(22 + i, 11, "%s", art_over[i]);
+        }
+    }
+    
+    refresh();
+}
 
-/* Three Functions to draw the menu screens, they ask which menu is active and print it.
-The intro and username screens wipe the screen first, but the pause screen draws the game board and then puts a box on top, so it can still be seen where the ball was frozen. 
-The sentence is split into four lines by hand because mvprintw does not wrap text, it just cuts it off at the edge */
+//MENU SCREENS
+// Pure front-end: these ask application_state.c what to show and turn the answer into characters. They decide nothing.
 
 // name of the game
 #define TITLE_ROWS 5
@@ -170,9 +214,9 @@ static void draw_menu_items(const MenuItem *items, int count, int y, int x) {
         }
     }
 }
-void draw_intro() {
+void draw_intro(Game *game) {
     int count, i;
-    const MenuItem *menu = active_menu(&count);
+    const MenuItem *menu = active_menu(game, &count);
 
     erase();
 
@@ -189,15 +233,15 @@ void draw_intro() {
 }
 
 
-void draw_username() {
+void draw_username(Game *game) {
     int count;
-    const MenuItem *menu = active_menu(&count);
+    const MenuItem *menu = active_menu(game, &count);
 
     erase();
 
     mvprintw(6, 16, "WHO IS PLAYING?");
     mvprintw(8, 8, "──────────────────────────────────");
-    mvprintw(11, 12, "Name: %s_", username);
+    mvprintw(11, 12, "Name: %s_", game->username);
     mvprintw(13, 12, "type it, Backspace to fix");
 
     draw_menu_items(menu, count, 18, 17);
@@ -206,16 +250,17 @@ void draw_username() {
     refresh();
 }
 
-void draw_pause() {
+// Unlike the other two this one is an overlay: it redraws the frozen board first and then paints a panel on top, so the player keeps their read on where the ball and paddle were. draw_all() ends with its own refresh(); the second refresh() below is what shows the panel, and curses only pushes changed cells.
+void draw_pause(Game *game) {
     int count, i, j;
-    const MenuItem *menu = active_menu(&count);
+    const MenuItem *menu = active_menu(game, &count);
 
     int top = 13;
     int left = 7;
     int width = 36;
     int height = 20;
 
-    draw_all(); // the frozen game underneath
+    draw_all(game); // the frozen game underneath
 
     for (i = 1; i < height - 1; i++) {
         for (j = 1; j < width - 1; j++) {
@@ -238,9 +283,9 @@ void draw_pause() {
 
     mvprintw(top + 2, left + 15, "PAUSED");
 
-    mvprintw(top + 4, left + 2, "%s!", username);
-    mvprintw(top + 5, left + 2, "You are at the level %d and you", level);
-    mvprintw(top + 6, left + 2, "have %d lives left, get back to", lives);
+    mvprintw(top + 4, left + 2, "%s!", game->username);
+    mvprintw(top + 5, left + 2, "You are at the level %d and you", game->level);
+    mvprintw(top + 6, left + 2, "have %d lives left, get back to", game->lives);
     mvprintw(top + 7, left + 2, "your ship and continue bouncing!");
 
     draw_menu_items(menu, count, top + 10, left + 9);
@@ -249,4 +294,5 @@ void draw_pause() {
     refresh();
 }
 
-//------- End Menu Screens ---------
+
+//------- END MENU SCREENS -------

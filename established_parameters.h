@@ -6,16 +6,20 @@
 
     #define PADDLE_WIDTH_0 12
 
+    #define ENLARGE_DURATION 400
+    #define SLOW_DURATION 200
+
     #define MAX_CAPSULES_PER_LEVEL 8
+    #define MAX_BALLS 3
     #define MAX_ANGLE 70.0f * 3.14159265f / 180.0f
 
-    #define BRICK_ROWS 1 // We should make it that the number of rows increase with the level, but 1 is the initial value.
+    #define BRICK_ROWS 4 // We should make it that the number of rows increase with the level, but 1 is the initial value.
     #define BRICK_COLUMNS 8
   
     #define BRICK_WIDTH 6
     #define BRICK_HEIGHT 2
-    #define MAX_USERNAME 16 // max lenght for the username
-    #define DEFAULT_USERNAME "Player" // In case no username has been typed
+    #define MAX_USERNAME 16 // buffer size for the username
+    #define DEFAULT_USERNAME "Player" // used if Play is pressed with no name typed
 
     #ifdef _WIN32 //FOR A WIN USER
         #include <windows.h>

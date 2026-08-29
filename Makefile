@@ -4,17 +4,12 @@ ifeq ($(OS),Windows_NT)
 
 else
 	EXE = arkanoid
-	UNAME_S = $(shell uname -s)
-	ifeq ($(UNAME_S),Darwin)
-		LIBS = -lncurses -lm
-	else
-		LIBS = -lncursesw -lm
-	endif
+	LIBS = -lncursesw -lm
 endif
 
 
 $(EXE): main.o game_data.o application_state.o  initialization_structures.o physics.o render.o
-	gcc main.o game_data.o application_state.o initialization_structures.o physics.o render.o -o $(EXE) -Wall $(LIBS)
+	gcc main.o game_data.o application_state.o initialization_structures.o physics.o render.o -o $(EXE) -Wall -Wpedantic $(LIBS)
 main.o: main.c established_parameters.h game_data.h initialization_structures.h physics.h render.h
 	gcc main.c -c
 game_data.o: game_data.c game_data.h initialization_structures.h physics.h established_parameters.h
