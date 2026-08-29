@@ -15,7 +15,6 @@ Each menu is a table of rows, "selected" remembers which row is lit up, and ente
 The name is typed one letter per loop instead of using getnstr(), because it would freeze the whole program until Enter is pressed */
 
 
-
 // This is the first manu that comes up, play brings the username input menu up
 static const MenuItem intro_menu[] = {
     { "Play", STATE_USERNAME }, 
@@ -32,15 +31,19 @@ static const MenuItem username_menu[] = {
 #define USERNAME_MENU_COUNT (sizeof(username_menu) / sizeof(username_menu[0]))
 
 
-
-// Scoreboard placeholder till implimented
+//Scoreboard system 
 static const MenuItem pause_menu[] = {
-    { "Continue",   STATE_PLAYING },
-    { "Quit",       STATE_QUIT    },
-    { "Scoreboard", STATE_PAUSED  }
+    { "Continue",   STATE_PLAYING    },
+    { "Quit",       STATE_QUIT       },
+    { "Scoreboard", STATE_SCOREBOARD },
 };
 #define PAUSE_MENU_COUNT (sizeof(pause_menu) / sizeof(pause_menu[0]))
 
+
+static const MenuItem scoreboard_menu[] = {
+    { "Back", STATE_PAUSED }
+};
+#define SCOREBOARD_MENU_COUNT (sizeof(scoreboard_menu) / sizeof(scoreboard_menu[0]))
 
 //Playing and quit states doesnt have a menu naturally
 const MenuItem *active_menu(int *count) {
@@ -54,6 +57,9 @@ const MenuItem *active_menu(int *count) {
         case STATE_PAUSED:
             *count = PAUSE_MENU_COUNT;
             return pause_menu;
+            case STATE_SCOREBOARD:        
+            *count = SCOREBOARD_MENU_COUNT; 
+            return scoreboard_menu;  
         default: 
             *count = 0;
             return NULL;

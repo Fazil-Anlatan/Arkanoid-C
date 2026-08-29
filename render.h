@@ -14,3 +14,4 @@ void draw_all();
 void draw_intro();
 void draw_username();
 void draw_pause();
+void draw_scoreboard();

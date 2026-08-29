@@ -37,7 +37,7 @@ int main () {
 
     gameInicialization();
 
-    //------- MAIN LOOP -------
+ //------- MAIN LOOP -------
     
 /* I changed the loop so it first checks which screen we are on, and only then does the work for that screen. Before it could only play the game.
 Instead of game_state being 1 or 0 it now holds one of five screens. */
@@ -85,6 +85,13 @@ Instead of game_state being 1 or 0 it now holds one of five screens. */
                 }
                 if (game_state == STATE_PAUSED) {
                     draw_pause();
+                }
+                break;
+
+           case STATE_SCOREBOARD:
+                app_state_update(c);
+                if (game_state == STATE_SCOREBOARD) {
+                    draw_scoreboard();
                 }
                 break;
 

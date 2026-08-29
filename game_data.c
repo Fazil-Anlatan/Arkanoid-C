@@ -41,7 +41,7 @@ void level_up() {
 //------- END LEVEL UP -------
 
 //----- History Log ------
-/* adds one line to scores.txt every time a game ends. Format is: username score level  */
+// adds one line to scores.txt every time a game ends. Format is: username score level 
 
 void save_score() {
 
@@ -56,6 +56,53 @@ void save_score() {
     fprintf(fp, "%s %d %d\n", username, score, level);
 
     fclose(fp);    // flushes the text to disk
+}
+// Reads scores.txt, sorts it best-first, and copies the top "max" lines into top[]
+
+#define MAX_SAVED_SCORES 100   // safety cap
+
+int load_scores(ScoreEntry top[], int max) {
+
+    FILE *fp;
+    ScoreEntry all[MAX_SAVED_SCORES];
+    ScoreEntry temp;
+    int count = 0;
+    int i, j;
+
+    fp = fopen("scores.txt", "r");
+
+    if (fp == NULL) {   // when no score file has been cretaed yet
+        return 0;
+    }
+
+    // one line = name, score, level. fscanf returns 3 when all three were read
+    while (count < MAX_SAVED_SCORES &&
+           fscanf(fp, "%15s %d %d", all[count].name, &all[count].score, &all[count].level) == 3) {
+        count++;
+    }
+
+    fclose(fp);
+
+    // highest score first
+    for (i = 0; i < count - 1; i++) {
+        for (j = 0; j < count - 1 - i; j++) {
+            if (all[j].score < all[j + 1].score) {
+                temp = all[j];
+                all[j] = all[j + 1];
+                all[j + 1] = temp;
+            }
+        }
+    }
+
+    if (count > max) {
+        count = max;
+    }
+
+    for (i = 0; i < count; i++) {
+        top[i] = all[i];
+    }
+
+    return count;
 }
 
 //---- End History Log-------

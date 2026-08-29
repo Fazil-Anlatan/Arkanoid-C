@@ -2,6 +2,7 @@
 #include "structures.h"
 #include "initialization_structures.h"
 #include "application_state.h"
+#include "game_data.h"
 
 //-------------EXTERNAL VAR DECLARATIONS------------
 extern Ball ball;
@@ -206,6 +207,35 @@ void draw_username() {
     refresh();
 }
 
+void draw_scoreboard() {
+    int count, i;
+    const MenuItem *menu = active_menu(&count);
+
+    ScoreEntry top[MAX_SCORES];
+    int n = load_scores(top, MAX_SCORES);
+
+    erase();
+
+    mvprintw(6, 17, "TOP %d SCORES", MAX_SCORES);
+    mvprintw(8, 8, "──────────────────────────────────");
+
+    if (n == 0) {
+        mvprintw(13, 14, "No games played yet");
+    }
+    else {
+        for (i = 0; i < n; i++) {
+            mvprintw(11 + i * 2, 9, "%d. %-16s %5d  (lvl %d)",
+                     i + 1, top[i].name, top[i].score, top[i].level);
+        }
+    }
+
+    draw_menu_items(menu, count, 24, 17);
+
+    mvprintw(28, 6, "Enter to go back");
+    refresh();
+}
+
+
 void draw_pause() {
     int count, i, j;
     const MenuItem *menu = active_menu(&count);
@@ -214,7 +244,7 @@ void draw_pause() {
     int left = 7;
     int width = 36;
     int height = 20;
-
+    
     draw_all(); // the frozen game underneath
 
     for (i = 1; i < height - 1; i++) {

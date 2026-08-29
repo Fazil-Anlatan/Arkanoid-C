@@ -1,6 +1,7 @@
 
 #ifndef STRUCTURES
 #define STRUCTURES
+#include "established_parameters.h" 
 
 // ----- Application States ----
 
@@ -11,13 +12,23 @@ typedef enum {
     STATE_INTRO = 0,   
     STATE_USERNAME,    
     STATE_PLAYING,    
-    STATE_PAUSED,     
+    STATE_PAUSED,
+    STATE_SCOREBOARD,
     STATE_QUIT     
-} GameState;
+} GameState;    
 
 
 typedef struct {
     const char *label;   
     GameState   target;  
 } MenuItem;
+#define MAX_SCORES 5   // the scoreboard shows top 5 scores
+
+typedef struct {
+    char name[MAX_USERNAME];
+    int  score;
+    int  level;
+} ScoreEntry;
+
+
 #endif
