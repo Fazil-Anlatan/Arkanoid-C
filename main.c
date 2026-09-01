@@ -101,6 +101,14 @@ int main () {
                 }
                 break;
 
+           case STATE_SCOREBOARD:
+                app_state_update(c);
+                if (game.game_state == STATE_SCOREBOARD) {
+                    draw_scoreboard();
+                }
+                break;
+
+
             default:
                 break;
         }

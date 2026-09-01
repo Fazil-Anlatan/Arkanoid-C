@@ -250,16 +250,45 @@ void draw_username(Game *game) {
     refresh();
 }
 
+void draw_pause() {
+    int count, i, j;
+    const MenuItem *menu = active_menu(game, &count);
+
+    ScoreEntry top[MAX_SCORES];
+    int n = load_scores(top, MAX_SCORES);
+
+    erase();
+
+    mvprintw(6, 17, "TOP %d SCORES", MAX_SCORES);
+    mvprintw(8, 8, "──────────────────────────────────");
+
+    if (n == 0) {
+        mvprintw(13, 14, "No games played yet");
+    }
+    else {
+        for (i = 0; i < n; i++) {
+            mvprintw(11 + i * 2, 9, "%d. %-16s %5d  (lvl %d)",
+                     i + 1, top[i].name, top[i].score, top[i].level);
+        }
+    }
+
+    draw_menu_items(menu, count, 24, 17);
+
+    mvprintw(28, 6, "Enter to go back");
+    refresh();
+}
+
+
 // Unlike the other two this one is an overlay: it redraws the frozen board first and then paints a panel on top, so the player keeps their read on where the ball and paddle were. draw_all() ends with its own refresh(); the second refresh() below is what shows the panel, and curses only pushes changed cells.
 void draw_pause(Game *game) {
     int count, i, j;
     const MenuItem *menu = active_menu(game, &count);
 
-    int top = 13;
+   int top = 13;
     int left = 7;
     int width = 36;
     int height = 20;
-
+    
     draw_all(game); // the frozen game underneath
 
     for (i = 1; i < height - 1; i++) {

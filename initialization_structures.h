@@ -1,10 +1,10 @@
 #ifndef INI_STRUCT
 #define INI_STRUCT
 
-struct Game; // forward declaration only: structures.h needs Ball/Brick/Paddle/Capsule
-             // (defined below) to build the Game struct, so this header can't
-             // include structures.h itself without creating a circular include.
-             // A pointer to an incomplete type is all these declarations need.
+#define MAX_SCORES 5   // the scoreboard shows top 5 scores
+
+struct Game; /* forward declaration only (defined below) to build the Game struct, so this header can't
+              include structures.h itself without creating a circular include. A pointer to an incomplete type is all these declarations need. */
 
 //------FUCTION DECLARATIONS-------------
 void gameInicialization(struct Game *game); //Divided into 3 functions: ball, paddle and bricks
@@ -83,5 +83,11 @@ typedef struct Game {
     int frame_counter;
     const char* screen[SCREEN_HEIGHT][SCREEN_WIDTH];
 } Game;
+
+typedef struct { //score entry for the scoreboard
+    char name[MAX_USERNAME];
+    int  score;
+    int  level;
+} ScoreEntry;
 
 #endif
