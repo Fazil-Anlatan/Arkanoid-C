@@ -279,4 +279,22 @@ void draw_pause() {
     refresh();
 }
 
+void draw_gameover() {
+    int count;
+    const MenuItem *menu = active_menu(&count);
+
+    erase();
+
+    mvprintw(6, 18, "GAME OVER");
+    mvprintw(8, 8, "──────────────────────────────────");
+    mvprintw(12, 12, "%s", username);
+    mvprintw(14, 12, "Score: %d", score);
+    mvprintw(15, 12, "Level: %d", level);
+
+    draw_menu_items(menu, count, 20, 17);
+
+    mvprintw(28, 6, "Up / Down to move, Enter to select");
+    refresh();
+}
+
 //------- End Menu Screens ---------

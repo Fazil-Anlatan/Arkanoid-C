@@ -7,4 +7,5 @@ void level_up();
 void advance_score_calc();
 void save_score();
 int  load_scores(ScoreEntry top[], int max);
+void reset_game();
 #endif

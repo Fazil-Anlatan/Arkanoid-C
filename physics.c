@@ -34,7 +34,8 @@ void ball_update() {
         gameInicialization_ball();
         }
         else{
-            game_state = STATE_QUIT; 
+            lives = 0;
+            game_state = STATE_GAMEOVER; 
         }
 
     }

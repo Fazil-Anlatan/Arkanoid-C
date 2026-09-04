@@ -95,6 +95,13 @@ Instead of game_state being 1 or 0 it now holds one of five screens. */
                 }
                 break;
 
+           case STATE_GAMEOVER:
+                app_state_update(c);
+                if (game_state == STATE_GAMEOVER) {
+                    draw_gameover();
+                }
+                break;
+
             default:
                 break;
         }
@@ -103,12 +110,18 @@ Instead of game_state being 1 or 0 it now holds one of five screens. */
             flushinp();
         }
 
-        sleep_ms(25); 
-    }
+     
+    
 
-     if (score > 0) {   // added score saver right before the loop ends
-        save_score();
-    }
+     if (game_state != previous_state) {
+        if (game_state == STATE_GAMEOVER && score > 0) {
+                save_score();
+            }
+            flushinp();
+        }
+
+        sleep_ms(25); 
+      }
     endwin();
     printf("Game Over!\n");
     

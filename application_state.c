@@ -2,6 +2,7 @@
 #include "established_parameters.h"
 #include "structures.h"
 #include "application_state.h"
+#include "game_data.h"
 
 
 extern GameState game_state;
@@ -39,6 +40,13 @@ static const MenuItem pause_menu[] = {
 };
 #define PAUSE_MENU_COUNT (sizeof(pause_menu) / sizeof(pause_menu[0]))
 
+// Restarting Menu 
+static const MenuItem gameover_menu[] = {
+    { "Play again", STATE_PLAYING },
+    { "Quit",       STATE_QUIT    }
+};
+#define GAMEOVER_MENU_COUNT (sizeof(gameover_menu) / sizeof(gameover_menu[0]))
+
 
 static const MenuItem scoreboard_menu[] = {
     { "Back", STATE_PAUSED }
@@ -60,6 +68,9 @@ const MenuItem *active_menu(int *count) {
             case STATE_SCOREBOARD:        
             *count = SCOREBOARD_MENU_COUNT; 
             return scoreboard_menu;  
+        case STATE_GAMEOVER:
+            *count = GAMEOVER_MENU_COUNT;
+            return gameover_menu;
         default: 
             *count = 0;
             return NULL;
@@ -78,7 +89,9 @@ void enter_state(GameState next) {
     if (next == STATE_PLAYING && game_state == STATE_USERNAME && username[0] == '\0') {
         strcpy(username, DEFAULT_USERNAME);
     }
-
+    if (next == STATE_PLAYING && game_state == STATE_GAMEOVER) {
+        reset_game();
+    }
     game_state = next;
     selected = 0;
 }
