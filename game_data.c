@@ -41,6 +41,17 @@ void level_up(Game *game, int c) {
 //------- END LEVEL UP -------
 
 
+
+//------- Restart Function ----------
+// basically resets the game, rebuilds the game board and stats as it was in the starting values and positions
+
+void reset_game(Game *game) {
+    game->score = 0;
+    game->lives = 3;
+    game->level = 1;
+    gameInicialization(game);
+}
+//------- End Restart ---------
 //----- History Log ------
 // adds one line to scores.txt every time a game ends. Format is: username score level 
 

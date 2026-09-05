@@ -2,6 +2,7 @@
 #include "established_parameters.h"
 #include "initialization_structures.h"
 #include "application_state.h"
+#include "game_data.h"
 
 
 static int selected = 0;
@@ -34,6 +35,13 @@ static const MenuItem pause_menu[] = {
 };
 #define PAUSE_MENU_COUNT (sizeof(pause_menu) / sizeof(pause_menu[0]))
 
+// Restarting Menu 
+static const MenuItem gameover_menu[] = {
+    { "Play again", STATE_PLAYING },
+    { "Quit",       STATE_QUIT    }
+};
+#define GAMEOVER_MENU_COUNT (sizeof(gameover_menu) / sizeof(gameover_menu[0]))
+
 
 static const MenuItem scoreboard_menu[] = {
     { "Back", STATE_PAUSED }
@@ -54,7 +62,10 @@ const MenuItem *active_menu(Game *game, int *count) {
             case STATE_SCOREBOARD:        
             *count = SCOREBOARD_MENU_COUNT; 
             return scoreboard_menu;  
-            default: // STATE_PLAYING and STATE_QUIT have no menu
+        case STATE_GAMEOVER:
+            *count = GAMEOVER_MENU_COUNT;
+            return gameover_menu;
+        default: 
             *count = 0;
             return NULL;
     }

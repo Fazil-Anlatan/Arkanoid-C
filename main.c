@@ -108,17 +108,28 @@ int main () {
                 }
                 break;
 
+           case STATE_GAMEOVER:
+                app_state_update(c);
+                if (game_state == STATE_GAMEOVER) {
+                    draw_gameover();
+                }
+                break;
+
 
             default:
                 break;
         }
 
-        if (game.game_state != previous_state) {
+
+     if (game_state != previous_state) {
+        if (game_state == STATE_GAMEOVER && score > 0) {
+                save_score();
+            }
             flushinp();
         }
 
         sleep_ms(25); 
-    }
+      }
     endwin();
     printf("Game Over!\n");
     
