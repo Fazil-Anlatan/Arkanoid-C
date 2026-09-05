@@ -16,3 +16,4 @@ void draw_game_over(Game *game);
 void draw_intro(Game *game);
 void draw_username(Game *game);
 void draw_pause(Game *game);
+void draw_scoreboard(Game *game);

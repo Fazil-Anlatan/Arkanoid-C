@@ -102,9 +102,9 @@ int main () {
                 break;
 
            case STATE_SCOREBOARD:
-                app_state_update(c);
+                app_state_update(&game, c);
                 if (game.game_state == STATE_SCOREBOARD) {
-                    draw_scoreboard();
+                    draw_scoreboard(&game);
                 }
                 break;
 

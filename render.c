@@ -1,6 +1,7 @@
 #include "established_parameters.h"
 #include "initialization_structures.h"
 #include "application_state.h"
+#include "game_data.h"
 
 //-------------LOCAL FUCTION DECLARATIONS------------
 void print_info(Game *game);
@@ -250,7 +251,7 @@ void draw_username(Game *game) {
     refresh();
 }
 
-void draw_pause() {
+void draw_scoreboard(Game *game) {
     int count, i, j;
     const MenuItem *menu = active_menu(game, &count);
 

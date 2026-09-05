@@ -37,7 +37,8 @@ void ball_update(Game *game) {
             game->frame_counter = 0;
             return;
         }
-
+        
+        
         //paddle collision
         if ((int)ball->y == (SCREEN_HEIGHT - 3)) {
             if ((int)ball->x >= game->paddle.x && (int)ball->x <= (game->paddle.x + game->paddle.size)) {
@@ -161,27 +162,54 @@ void activate_powerup (Game *game, int k) {
             }
 
             {
-                Ball base_ball = game->ball[0];
-                float speed = hypotf(base_ball.vx, base_ball.vy);
-                float angle = atan2f(base_ball.vy, base_ball.vx);
+                Ball ini_ball = game->ball[0]; // Take the initial ball as a reference for the new balls
+                
+                if (game->active_balls == 1) { 
+                    game->ball[1] = ini_ball;
+                    game->ball[1].vx = ini_ball.vx;
+                    game->ball[1].vy = ini_ball.vy;
+                    
+                    game->ball[2] = ini_ball;
+                    game->ball[2].vx = ini_ball.vx;
+                    game->ball[2].vy = ini_ball.vy  ;
 
-                if (game->active_balls == 1) {
-                    game->ball[1] = base_ball;
-                    game->ball[1].vx = speed * cosf(angle - 0.5f);
-                    game->ball[1].vy = speed * sinf(angle - 0.5f);
-
-                    game->ball[2] = base_ball;
-                    game->ball[2].vx = speed * cosf(angle + 0.5f);
-                    game->ball[2].vy = speed * sinf(angle + 0.5f);
-
+                    //apperaring logic (in a way they dont overlap) 
+                    if ((ini_ball.vy <0)&&(ini_ball.y - 2)< (SCREEN_HEIGHT - 3)){
+                        game->ball[1].y = ini_ball.y - 1;
+                        game->ball[2].y = ini_ball.y - 2;
+                    }
+                    else if ((ini_ball.vy >0)&&(ini_ball.y +2 )> 1 ||((ini_ball.vy <0))){
+                        game->ball[1].y = ini_ball.y + 1;
+                        game->ball[2].y = ini_ball.y + 2;
+                    }
+                    if ((ini_ball.vx <0)&&(ini_ball.x - 2)> 1){
+                        game->ball[1].x = ini_ball.x - 1;
+                        game->ball[2].x = ini_ball.x - 2;
+                    }
+                    else if ((ini_ball.vx >0)&&(ini_ball.x + 2)< (SCREEN_WIDTH - 2)){
+                        game->ball[1].x = ini_ball.x + 1;
+                        game->ball[2].x = ini_ball.x + 2;
+                    }
                     game->active_balls = 3;
                 }
-                else if (game->active_balls == 2) {
-                    game->ball[2] = base_ball;
-                    game->ball[2].vx = speed * cosf(angle + 0.5f);
-                    game->ball[2].vy = speed * sinf(angle + 0.5f);
+                else if (game->active_balls == 2) { //adds the ball that is mising if there are 2 balls active. When teh capsule is collected
+                    game->ball[2] = ini_ball;
+                    game->ball[2].vx = ini_ball.vx;
+                    game->ball[2].vy = ini_ball.vy;
                     game->active_balls = 3;
                 }
+                        if ((ini_ball.vy <0)&&(ini_ball.y - 2)> (SCREEN_HEIGHT - 3)){
+                                game->ball[2].y = ini_ball.y - 2;
+                            }
+                            else if (((ini_ball.vy >0)&&(ini_ball.y +2 )< (SCREEN_HEIGHT - 1))||((ini_ball.vy <0))){
+                                game->ball[2].y = ini_ball.y + 2;
+                            }
+                            if ((ini_ball.vx <0)&&(ini_ball.x - 2)> 1){
+                                game->ball[2].x = ini_ball.x - 2;
+                            }
+                            else if ((ini_ball.vx >0)&&(ini_ball.x + 2)< (SCREEN_WIDTH - 2)){
+                                game->ball[2].x = ini_ball.x + 2;
+                            }
             }
             break;
 

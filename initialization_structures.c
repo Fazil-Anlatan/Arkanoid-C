@@ -71,7 +71,8 @@ void gameInicialization_bricks(Game *game) {
                 for (j = 0; j < BRICK_COLUMNS; j++) {
                     game->brick[i][j].health = l1_pattern[i][j];
                     if (game->brick[i][j].health > 0) {
-                        game->brick[i][j].contains_capsule = !(rand() % 10);
+                       // game->brick[i][j].contains_capsule = !(rand() % 10);
+                       game->brick[i][j].contains_capsule = 1;                 // JUST TO TEST THE CAPSULES
                         game->brick[i][j].color = (rand() % 6) + 1;
                     }
                 }
@@ -130,7 +131,8 @@ void gameInicialization_capsules(Game *game){
                 game->capsule[k].x = 1 + j * BRICK_WIDTH; 
                 game->capsule[k].y = 1 + i * BRICK_HEIGHT; 
                 game->capsule[k].vy = 0;
-                if (k == disruption)
+                game->capsule[k].type = DISRUPTION;
+               /* if (k == disruption)
                 {
                     game->capsule[k].type = DISRUPTION;
                 }
@@ -144,7 +146,7 @@ void gameInicialization_capsules(Game *game){
                     game->capsule[k].type = type;
                 }
 
-                k++;
+                k++;*/
             }
         }
     }
