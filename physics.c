@@ -33,7 +33,7 @@ void ball_update(Game *game) {
                 gameInicialization_ball(game);
                 return;
             }
-            game->game_state = STATE_GAME_OVER;
+            game->game_state = STATE_GAMEOVER;
             game->frame_counter = 0;
             return;
         }
@@ -71,7 +71,7 @@ void ball_update(Game *game) {
 
             if (game->brick[brick_y][brick_x].health > 0) {//only start if statement if the brick is alive
                 game->brick[brick_y][brick_x].health -= 1;
-                game->score += advance_score_calc(brick_y); //add score based on the row of the brick that was destroyed.
+                game->score += advance_score_calc(game,brick_y); //add score based on the row of the brick that was destroyed.
                 //capsules in bricks
                 if (game->brick[brick_y][brick_x].contains_capsule && game->next_capsule < MAX_CAPSULES_PER_LEVEL) {
                     game->capsule[game->next_capsule].x = brick_x * BRICK_WIDTH + BRICK_WIDTH / 2;

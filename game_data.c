@@ -14,10 +14,28 @@ void game_data_init(Game *game) {
     game->level = 1;
 }
 
-int advance_score_calc(int brick_y) // for bonus
+int advance_score_calc(Game *game, int brick_y) // for bonus
 {
-    (void)brick_y;
-    return 1;
+  /*  int total_rows = BRICK_ROWS; // initial value for levels 1 and 2, which have 4 rows of bricks
+
+    // from level 3, we need to calculate the total number of rows based on the level
+    if (game->level == 3) {
+        total_rows = BRICK_ROWS + 3; //7rows
+    } 
+    else if (game->level > 3) {
+        total_rows = BRICK_ROWS + ((game->level - 3) % BRICK_ROWS); //same logic we use to genereta the rows in the brick initialization function
+    }
+
+    // last rows =1 point +2 for each row above it
+    int points = 1 + 2 * ((total_rows - 1) - brick_y);
+
+    //just in case, and error there is an error in the code, we dont subtract points from the score
+    if (points < 1) {
+        points = 1;
+    }
+
+    return points;*/
+    return 1; // for now, just return 1 point for each brick destroyed
 }
 
 //------- LEVEL UP -------

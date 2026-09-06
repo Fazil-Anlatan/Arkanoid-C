@@ -56,7 +56,7 @@ typedef enum {
     STATE_USERNAME,    // name entry: Play / Quit
     STATE_PLAYING,     // the game itself
     STATE_PAUSED,      // Continue / Quit / Scoreboard
-    STATE_GAME_OVER,   // game over animation
+    STATE_GAMEOVER,   // game over animation
     STATE_SCOREBOARD,  // top 5 scores
     STATE_QUIT         // main() leaves its loop
 } GameState;

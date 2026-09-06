@@ -76,19 +76,7 @@ int main () {
                 timers_update(&game);
                 break;
 
-            case STATE_GAME_OVER:
-                draw_game_over(&game);
-                game.frame_counter++;
-                
-                // A 25ms por frame, 120 frames son ~3 segundos. 
-                // Luego de 3 segundos, volvemos a la pantalla de inicio.
-                if (game.frame_counter > 120) {
-                    enter_state(&game, STATE_INTRO);
-                }
-                break;
-
-
-
+        
             case STATE_PAUSED:
                 if (c == 'p' || c == 'P') {
                     enter_state(&game, STATE_PLAYING);
@@ -109,11 +97,14 @@ int main () {
                 break;
 
            case STATE_GAMEOVER:
-                app_state_update(c);
-                if (game_state == STATE_GAMEOVER) {
-                    draw_gameover();
+                if (game.frame_counter <= 120) {
+                    draw_game_over(&game);  // ANIMATION: 120 frames = 3 seconds at 25 ms per frame
+                    game.frame_counter++;
+                } else {
+                    draw_game_over_stats(&game); // INFO 
                 }
                 break;
+
 
 
             default:
@@ -121,9 +112,9 @@ int main () {
         }
 
 
-     if (game_state != previous_state) {
-        if (game_state == STATE_GAMEOVER && score > 0) {
-                save_score();
+     if (game.game_state != previous_state) {
+        if (game.game_state == STATE_GAMEOVER && game.score > 0) {
+                save_score(&game);
             }
             flushinp();
         }

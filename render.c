@@ -324,21 +324,22 @@ void draw_pause(Game *game) {
     refresh();
 }
 
-void draw_gameover() {
+void draw_game_over_stats(Game *game) {
     int count;
-    const MenuItem *menu = active_menu(&count);
+    const MenuItem *menu = active_menu(game, &count);
 
     erase();
 
     mvprintw(6, 18, "GAME OVER");
     mvprintw(8, 8, "──────────────────────────────────");
-    mvprintw(12, 12, "%s", username);
-    mvprintw(14, 12, "Score: %d", score);
-    mvprintw(15, 12, "Level: %d", level);
+    mvprintw(12, 12, "%s", game->username);
+    mvprintw(14, 12, "Score: %d", game->score);
+    mvprintw(15, 12, "Level: %d", game->level);
 
-    draw_menu_items(menu, count, 20, 17);
+  
+     draw_menu_items(menu, count, 19, 17);
 
-    mvprintw(28, 6, "Up / Down to move, Enter to select");
+     mvprintw(28, 6, "Up / Down to move, Enter to select");
     refresh();
 }
 

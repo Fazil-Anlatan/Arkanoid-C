@@ -10,6 +10,7 @@ void set_paddle(Game *game);
 void set_capsule(Game *game);
 void draw_all(Game *game);
 void draw_game_over(Game *game);
+void draw_game_over_stats(Game *game);
 #endif
 
 //MENU SCREENS
