@@ -73,7 +73,6 @@ void gameInicialization_bricks(Game *game) {
                     game->brick[i][j].health = l1_pattern[i][j];
                     if (game->brick[i][j].health > 0) {
                         game->brick[i][j].contains_capsule = !(rand() % 10);
-                      // game->brick[i][j].contains_capsule = 1;                 // JUST TO TEST THE CAPSULES
                         game->brick[i][j].color = (rand() % 6) + 1;
                     }
                 }
@@ -96,7 +95,7 @@ void gameInicialization_bricks(Game *game) {
             break;
 
         case 3:
-            for (i = 1; i < BRICK_ROWS+3; i++) { //square of bricks
+            for (i = 1; i < INITIAL_BRICK_ROWS; i++) { //square of bricks
                 for (j = 1; j < BRICK_COLUMNS-1; j++) {
                     game->brick[i][j].health = 1;
                     game->brick[i][j].contains_capsule = !(rand() % 10);
