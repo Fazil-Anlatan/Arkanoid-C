@@ -73,10 +73,11 @@ typedef struct Game {
     short int lives;
     short int level;
     int combined_brick_health;
+    int rows_for_level;
 
     Ball ball[MAX_BALLS];
     int active_balls;
-    Brick brick[BRICK_ROWS][BRICK_COLUMNS];
+    Brick brick[MAX_BRICK_ROWS][BRICK_COLUMNS];
     Paddle paddle;
     Capsule capsule[MAX_CAPSULES_PER_LEVEL];
     int next_capsule;
