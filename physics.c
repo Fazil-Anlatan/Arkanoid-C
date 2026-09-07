@@ -15,12 +15,18 @@ void ball_update(Game *game) {
         ball->x += ball->vx;
         ball->y += ball->vy;
 
-        if ((int)ball->x <= 1 || (int)ball->x >= SCREEN_WIDTH - 2) {
-            ball->vx *= -1;
+        if ((int)ball->x <= 1) {
+            ball->vx = fabsf(ball->vx);
         }
+        
+        if ((int)ball->x >= SCREEN_WIDTH - 2) {
+            ball->vx = -fabsf(ball->vx);
+        }
+        
         if ((int)ball->y <= 1) {
-            ball->vy *= -1;
+            ball->vy = fabsf(ball->vy);
         }
+        
         if ((int)ball->y >= SCREEN_HEIGHT - 1) {
             if (game->active_balls > 1) {
                 game->ball[i] = game->ball[game->active_balls - 1];
@@ -67,7 +73,7 @@ void ball_update(Game *game) {
         int brick_y = ((int)ball->y - 1) / BRICK_HEIGHT;
         int brick_x = ((int)ball->x - 1) / BRICK_WIDTH;
 
-        if (brick_y < BRICK_ROWS && brick_x < BRICK_COLUMNS) {//only start if statement if the ball is inside a rendered or unrendered brick.
+        if (brick_y < game -> rows_for_level && brick_x < BRICK_COLUMNS) {//only start if statement if the ball is inside a rendered or unrendered brick.
 
             if (game->brick[brick_y][brick_x].health > 0) {//only start if statement if the brick is alive
                 game->brick[brick_y][brick_x].health -= 1;
@@ -130,7 +136,7 @@ void activate_powerup (Game *game, int k) {
     switch (game -> capsule[k].type) {
         case ENLARGE:
             game -> paddle.size += 4;
-            game -> timer.enlarge = ENLARGE_DURATION; // 10 seconds
+            game -> timer.enlarge += ENLARGE_DURATION; // 10 seconds
             break;
 
         case SLOW:
@@ -138,14 +144,14 @@ void activate_powerup (Game *game, int k) {
                 game->ball[i].vx *= 0.5f;
                 game->ball[i].vy *= 0.5f;
             }
-            game -> timer.slow = SLOW_DURATION;
+            game -> timer.slow += SLOW_DURATION; //5 seconds
             break;
 
 
         case BREAK:
             int i, j;
             game -> score += (game -> combined_brick_health);
-            for (i = 0; i < BRICK_ROWS; i++) {
+            for (i = 0; i < game -> rows_for_level; i++) {
                 for (j = 0; j < BRICK_COLUMNS; j++) {
                     game -> brick[i][j].health = 0;
                 }
@@ -192,7 +198,7 @@ void activate_powerup (Game *game, int k) {
                     }
                     game->active_balls = 3;
                 }
-                else if (game->active_balls == 2) { //adds the ball that is mising if there are 2 balls active. When teh capsule is collected
+                else if (game->active_balls == 2) { //adds the ball that is mising if there are 2 balls active. When the capsule is collected
                     game->ball[2] = ini_ball;
                     game->ball[2].vx = ini_ball.vx;
                     game->ball[2].vy = ini_ball.vy;
@@ -252,16 +258,14 @@ void timers_update(Game *game)
     if (game->timer.enlarge > 0)
     {
         game->timer.enlarge--;
-
-        if (game->timer.enlarge == 0)
-            game->paddle.size = PADDLE_WIDTH_0;
+        if (game -> timer.enlarge % ENLARGE_DURATION == 0)
+            game->paddle.size -=4;
     }
 
     if (game->timer.slow > 0)
     {
         game->timer.slow--;
-
-        if (game->timer.slow == 0)
+        if (game -> timer.slow % SLOW_DURATION == 0)
         {
             for (int i = 0; i < game->active_balls; i++) {
                 game->ball[i].vx *= 2.0f;
