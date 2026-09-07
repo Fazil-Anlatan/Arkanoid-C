@@ -20,7 +20,7 @@ void set_borders(Game *game) {
 
     //set roof
     int i;
-    for (i = 1; i <= SCREEN_WIDTH; i++) {
+    for (i = 1; i < SCREEN_WIDTH - 1; i++) {
         game->screen[0][i] = "═";
     }
 
@@ -57,7 +57,7 @@ void set_ball (Game *game) {
 
 void set_bricks (Game *game) {
     int i, j;
-    for (i = 0; i < BRICK_ROWS; i++) {
+    for (i = 0; i < game -> rows_for_level; i++) {
         for (j = 0; j < BRICK_COLUMNS; j++) {
             int start_y = 1 + i * BRICK_HEIGHT;
             int start_x = 1 + j * BRICK_WIDTH;
@@ -107,7 +107,7 @@ void draw_all(Game *game) {
         }
     }
     // re-writes the bricks with colors, because the above code doesn't support colors. The color is stored in the brick structure.
-    for (i = 0; i < BRICK_ROWS; i++) {
+    for (i = 0; i < game -> rows_for_level; i++) {
         for (j = 0; j < BRICK_COLUMNS; j++) {
             if (game->brick[i][j].health > 0) {
                 int start_y = 1 + i * BRICK_HEIGHT;
@@ -141,7 +141,12 @@ void print_info(Game *game){
         mvprintw(SCREEN_HEIGHT+1, 0, "║Score: %-30d║", game->score);
         mvprintw(SCREEN_HEIGHT+2, 0,"║");//finishes the rectangle 
         mvprintw(SCREEN_HEIGHT+2, 38,"║");//" 
-        mvprintw(SCREEN_HEIGHT + 2, 1,"Lives: %s",lives_s);
+        mvprintw(SCREEN_HEIGHT + 2, 1,"Lives: ");
+        int i;
+        for (i = 0; i < game -> lives; i++) {
+            mvprintw(SCREEN_HEIGHT + 2, 8 + (2 * i),"♥ ");
+        }
+
         mvprintw(SCREEN_HEIGHT + 3, 0, "║Level: %-30d║", game->level);
         mvprintw(SCREEN_HEIGHT+4, 0,"╚═════════════════════════════════════╝");
     }
@@ -156,11 +161,12 @@ void draw_game_over(Game *game) {
     // frame_counter / 10 hace que cambie la visibilidad cada 250ms aprox.
     if ((game->frame_counter / 10) % 2 == 0) {
         const char *art_game[5] = {
-            "[][][]  [][]  []   [] [][][]",
-            "[]     []  [] [][] [][] []    ",
-            "[] [][] [][][] [] [] [] [][][]",
-            "[]  [] []  [] []   [] []    ",
-            "[][][] []  [] []   [] [][][]"
+            "[][][]   [][]  []     [] [][][]",
+            "[]      []  [] [][] [][] []    ",
+            "[] [][] [][][] []  [] [] [][][]",
+            "[]  []  []  [] []     [] []    ",
+            "[][][]  []  [] []     [] [][][]"
+
         };
         
         const char *art_over[5] = {
