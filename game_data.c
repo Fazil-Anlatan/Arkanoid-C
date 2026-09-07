@@ -12,6 +12,7 @@ void game_data_init(Game *game) {
     game->score = 0;
     game->lives = 3;
     game->level = 1;
+    game->rows_for_level = INITIAL_BRICK_ROWS;
 }
 
 int advance_score_calc(Game *game, int brick_y) // for bonus
@@ -43,7 +44,7 @@ void level_up(Game *game, int c) {
 // if the combined health of all bricks is 0, level up.
     int j, i;
     game->combined_brick_health = 0;
-    for (i = 0; i < BRICK_ROWS; i++){
+    for (i = 0; i < game -> rows_for_level; i++){
         for (j = 0; j < BRICK_COLUMNS; j++){
             game -> combined_brick_health += game->brick[i][j].health;
         }
@@ -53,6 +54,10 @@ void level_up(Game *game, int c) {
                 gameInicialization_bricks(game);
                 gameInicialization_ball(game);
                 gameInicialization_capsules(game);
+                gameInicialization_timers(game);
+                if (game -> level > 3 && game -> rows_for_level < MAX_BRICK_ROWS)
+                    game -> rows_for_level++;
+
     }
 }
 
@@ -67,6 +72,8 @@ void reset_game(Game *game) {
     game->score = 0;
     game->lives = 3;
     game->level = 1;
+    game->frame_counter = 0;
+    game->rows_for_level = INITIAL_BRICK_ROWS;
     gameInicialization(game);
 }
 //------- End Restart ---------
