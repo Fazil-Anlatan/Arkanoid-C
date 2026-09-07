@@ -11,6 +11,7 @@ void gameInicialization(Game *game) {
    gameInicialization_paddle(game);
    gameInicialization_bricks(game);
    gameInicialization_capsules(game);
+   gameInicialization_timers(game);
 }
 
 void gameInicialization_ball(Game *game) { //isn't finished yed
@@ -50,7 +51,7 @@ void gameInicialization_paddle(Game *game) {
 void gameInicialization_bricks(Game *game) {
     int i, j;
     
-    const int l1_pattern[BRICK_ROWS][BRICK_COLUMNS] = {
+    const int l1_pattern[INITIAL_BRICK_ROWS][BRICK_COLUMNS] = {
         {1, 1, 0, 1, 1, 0, 1, 1},
         {1, 1, 0, 1, 1, 0, 1, 1},
         {1, 1, 0, 1, 1, 0, 1, 1},
@@ -67,7 +68,7 @@ void gameInicialization_bricks(Game *game) {
 
     switch (game->level) {
         case 1:
-            for (i = 0; i < BRICK_ROWS; i++) { // Use the predefined pattern for level 1 (similar to the real game)
+            for (i = 0; i < INITIAL_BRICK_ROWS; i++) { // Use the predefined pattern for level 1 (similar to the real game)
                 for (j = 0; j < BRICK_COLUMNS; j++) {
                     game->brick[i][j].health = l1_pattern[i][j];
                     if (game->brick[i][j].health > 0) {
@@ -81,7 +82,7 @@ void gameInicialization_bricks(Game *game) {
             break;
 
         case 2:     //inverted triangle of bricks
-            for (i = 0; i < BRICK_ROWS; i++) { 
+            for (i = 0; i < INITIAL_BRICK_ROWS; i++) { 
                 for (j = 0; j < BRICK_COLUMNS; j++) {
                     if (j >= i && j < BRICK_COLUMNS - i) {
                         game->brick[i][j].health = 1;
@@ -105,8 +106,7 @@ void gameInicialization_bricks(Game *game) {
             break;
 
         default: // For levels greater than 3, a random pattern of bricks will be generated
-            char more_rows = (game->level -3)%BRICK_ROWS; // this will ad more rows of bricks if you pass level 3,
-            for (i = 0; i < BRICK_ROWS + more_rows; i++) {
+            for (i = 0; i < game -> rows_for_level; i++) {
                 for (j = 0; j < BRICK_COLUMNS; j++) {
                     game->brick[i][j].health = (rand() % 10 < 7) ? 1 : 0; //70 % of chace to generate a brick in 4 rows and 8 columns
                     if (game->brick[i][j].health > 0) {
@@ -125,7 +125,7 @@ void gameInicialization_capsules(Game *game){
     int disruption = rand() % MAX_CAPSULES_PER_LEVEL;
     game->next_capsule = 0;
     k = 0;
-    for (i = 0; i < BRICK_ROWS; i++) {
+    for (i = 0; i < game -> rows_for_level; i++) {
         for (j = 0; j < BRICK_COLUMNS; j++) {
             if ((game->brick[i][j].contains_capsule > 0) && (k < MAX_CAPSULES_PER_LEVEL)) {
                 game->capsule[k].x = 1 + j * BRICK_WIDTH; 
