@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h> //srand() was not working in linnux without this
 #include <locale.h> //needed in linux for special characters
 #include <time.h>
 #include "established_parameters.h"
@@ -102,6 +103,7 @@ int main () {
                     game.frame_counter++;
                 } else {
                     draw_game_over_stats(&game); // INFO 
+                    app_state_update(&game, c);
                 }
                 break;
 
