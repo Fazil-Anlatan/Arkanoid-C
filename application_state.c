@@ -83,6 +83,10 @@ void enter_state(Game *game, GameState next) {
     if (next == STATE_PLAYING && game->game_state == STATE_USERNAME && game->username[0] == '\0') {
         strcpy(game->username, DEFAULT_USERNAME);
     }
+    if (next == STATE_PLAYING && game->game_state == STATE_GAMEOVER) {
+        reset_game(game);
+    }
+
 
     game->game_state = next;
     selected = 0;
