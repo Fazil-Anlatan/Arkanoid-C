@@ -5,6 +5,11 @@
 
 #define TITLE_ROWS 5
 #define TITLE_WIDTH 34
+#define GAME_OVER_ART_ROWS 5
+#define GAME_OVER_GAP 2  // Number of blank lines between GAME and OVER
+#define GAME_ART_WIDTH 31
+#define OVER_ART_WIDTH 27
+#define TOTAL_GAME_OVER_HEIGHT ((GAME_OVER_ART_ROWS * 2) + GAME_OVER_GAP)
 //-------------LOCAL FUCTION DECLARATIONS------------
 void print_info(const PlayerStats_t* stats, const Timer_t* timer);
 //------- RENDERS -------
@@ -171,8 +176,7 @@ void print_info(const PlayerStats_t* stats, const Timer_t* timer) {
 void draw_game_over(int frame_counter) {
   clear();
 
-  // Titileo: Si la división da par mostramos, si da impar ocultamos.
-  // frame_counter / 10 hace que cambie la visibilidad cada 250ms aprox.
+  // BLinking efect, text only showed when the devision is
   if ((frame_counter / 10) % 2 == 0) {
     const char* art_game[5] = {
         "[][][]   [][]  []     [] [][][]", "[]      []  [] [][] [][] []    ",
@@ -186,14 +190,20 @@ void draw_game_over(int frame_counter) {
         "[]  [] []  [] [][][] [][][]", "[]  []  [][]  []     [] [] ",
         "[][][]   []   [][][] []  []"};
 
-    // Centrado en la pantalla (SCREEN_WIDTH=50, SCREEN_HEIGHT=48)
-    for (int i = 0; i < 5; i++) {
-      mvprintw(15 + i, 10, "%s", art_game[i]);
-      mvprintw(22 + i, 11, "%s", art_over[i]);
+    // Center X coordinates
+    int game_x = (SCREEN_WIDTH - GAME_ART_WIDTH) / 2;
+    int over_x = (SCREEN_WIDTH - OVER_ART_WIDTH) / 2;
+
+    // Center Y starting position vertically
+    int start_y = (SCREEN_HEIGHT - TOTAL_GAME_OVER_HEIGHT) / 2;
+    int game_y = start_y;
+    int over_y = start_y + GAME_OVER_ART_ROWS + GAME_OVER_GAP;
+
+    for (int i = 0; i < GAME_OVER_ART_ROWS; i++) {
+      mvprintw(game_y + i, game_x, "%s", art_game[i]);
+      mvprintw(over_y + i, over_x, "%s", art_over[i]);
     }
   }
-
-  refresh();
 }
 
 // MENU SCREENS
@@ -241,7 +251,9 @@ void draw_intro_animated(GameState_t game_state, int frame_counter) {
 
     if (frame_counter > line_delay) {
       // calculates de position of the title from y=0 up to target_y + i
-      int current_y = (frame_counter - line_delay) / 2;
+      int current_y =
+          (frame_counter - line_delay) / 2;  // moves down 1 line every 2 frames
+      // Lock row into place once it reaches its final target position
       if (current_y > target_y + i) {
         current_y = target_y + i;
       }
@@ -250,7 +262,7 @@ void draw_intro_animated(GameState_t game_state, int frame_counter) {
   }
 
   // now the msubtitle appears (waiting for te animation to finish)
-  if (frame_counter > 50) {
+  if (frame_counter > 1.5 * FPS) {
     mvprintw(13, 14, "a brick breaker in C");
     mvprintw(15, 8, "──────────────────────────────────");
   }
@@ -260,7 +272,7 @@ void draw_intro_animated(GameState_t game_state, int frame_counter) {
   mvprintw(25, paddle_x + 1, "══════");
 
   // now the menu appears (delayed)
-  if (frame_counter > 70) {
+  if (frame_counter > 2 * FPS) {
     int count;
     const MenuItem* menu = active_menu(game_state, &count);
     draw_menu_items(menu, count, 18, 17);
@@ -318,10 +330,10 @@ void draw_scoreboard(GameState_t game_state) {
 }
 
 // Unlike the other two this one is an overlay: it redraws the frozen board
-// first and then paints a panel on top, so the player keeps their read on where
-// the ball and paddle were. draw_all() ends with its own refresh(); the second
-// refresh() below is what shows the panel, and curses only pushes changed
-// cells.
+// first and then paints a panel on top, so the player keeps their read on
+// where the ball and paddle were. draw_all() ends with its own refresh(); the
+// second refresh() below is what shows the panel, and curses only pushes
+// changed cells.
 void draw_pause(GameState_t game_state, const PlayerStats_t* stats,
                 const Objects_t* objects, const Timer_t* timer,
                 const char* screen[SCREEN_HEIGHT][SCREEN_WIDTH]) {
