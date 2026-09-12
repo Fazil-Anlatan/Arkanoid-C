@@ -2,9 +2,11 @@
 #define PHYSICS
 #include "initialization_structures.h"
 //-----------------FUCTION DECLARATIONS------------
-void ball_update(Game *game);
-void paddle_update(Game *game, int c);
-void capsule_update(Game *game);
-void activate_powerup(Game *game, int k);
-void timers_update(Game *game);
+void ball_update(GameState_t* game_state, PlayerStats_t* stats,
+                 Objects_t* objects, int* frame_counter);
+void paddle_update(Objects_t* objects, int c);
+void capsule_update(PlayerStats_t* stats, Objects_t* objects, Timer_t* timer);
+void activate_powerup(PlayerStats_t* stats, Objects_t* objects, Timer_t* timer,
+                      int k);
+void timers_update(Objects_t* objects, Timer_t* timer);
 #endif
