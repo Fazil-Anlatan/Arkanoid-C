@@ -3,6 +3,8 @@
 #include "game_data.h"
 #include "initialization_structures.h"
 
+#define TITLE_ROWS 5
+#define TITLE_WIDTH 34
 //-------------LOCAL FUCTION DECLARATIONS------------
 void print_info(const PlayerStats_t* stats, const Timer_t* timer);
 //------- RENDERS -------
@@ -198,14 +200,6 @@ void draw_game_over(int frame_counter) {
 //  Pure front-end: these ask application_state.c what to show and turn the
 //  answer into characters. They decide nothing.
 
-// name of the game
-#define TITLE_ROWS 5
-#define TITLE_WIDTH 34
-static const char* title_art[TITLE_ROWS] = {
-    "████ █    ████ █  █ ████ ████ ███ ", "█    █    █  █ ██ █ █  █  ██  █  █",
-    "█    █    █  █ █ ██ █  █  ██  █  █", "█    █    █  █ █  █ █  █  ██  █  █",
-    "████ ████ ████ █  █ ████ ████ ███ "};
-
 // menu renderer
 static void draw_menu_items(const MenuItem* items, int count, int y, int x) {
   int i;
@@ -227,49 +221,56 @@ static void draw_menu_items(const MenuItem* items, int count, int y, int x) {
   }
 }
 void draw_intro_animated(GameState_t game_state, int frame_counter) {
-    erase();
+  erase();
 
-    int target_y = 6;
-    int center_x = (SCREEN_WIDTH - TITLE_WIDTH) / 2;
+  // name of the game
+  static const char* title_art[TITLE_ROWS] = {
+      "████ █    ████ █  █ ████ ████ ███ ",
+      "█    █    █  █ ██ █ █  █  ██  █  █",
+      "█    █    █  █ █ ██ █  █  ██  █  █",
+      "█    █    █  █ █  █ █  █  ██  █  █",
+      "████ ████ ████ █  █ ████ ████ ███ "};
 
-    //animation for the title (falling movement)
-    for (int i = 0; i < TITLE_ROWS; i++) {
-        // delay for the new line
-        int line_delay = i * 8; 
-        
-        if (frame_counter > line_delay) {
-            // calculates de position of the title from y=0 up to target_y + i
-            int current_y = (frame_counter - line_delay) / 2;
-            if (current_y > target_y + i) {
-                current_y = target_y + i;
-            }
-            mvprintw(current_y, center_x, "%s", title_art[i]);
-        }
+  int target_y = 6;
+  int center_x = (SCREEN_WIDTH - TITLE_WIDTH) / 2;
+
+  // animation for the title (falling movement)
+  for (int i = 0; i < TITLE_ROWS; i++) {
+    // delay for the new line
+    int line_delay = i * 8;
+
+    if (frame_counter > line_delay) {
+      // calculates de position of the title from y=0 up to target_y + i
+      int current_y = (frame_counter - line_delay) / 2;
+      if (current_y > target_y + i) {
+        current_y = target_y + i;
+      }
+      mvprintw(current_y, center_x, "%s", title_art[i]);
     }
+  }
 
-    // now the msubtitle appears (waiting for te animation to finish)
-    if (frame_counter > 50) {
-        mvprintw(13, 14, "a brick breaker in C");
-        mvprintw(15, 8, "──────────────────────────────────");
+  // now the msubtitle appears (waiting for te animation to finish)
+  if (frame_counter > 50) {
+    mvprintw(13, 14, "a brick breaker in C");
+    mvprintw(15, 8, "──────────────────────────────────");
+  }
+
+  // the paddle moves
+  int paddle_x = (frame_counter / 2) % (SCREEN_WIDTH - 8);
+  mvprintw(25, paddle_x + 1, "══════");
+
+  // now the menu appears (delayed)
+  if (frame_counter > 70) {
+    int count;
+    const MenuItem* menu = active_menu(game_state, &count);
+    draw_menu_items(menu, count, 18, 17);
+
+    if ((frame_counter / 15) % 3 >= 1) {  // blinking text
+      mvprintw(28, 6, "Up / Down to move, Enter to select");
     }
+  }
 
-    // the paddle moves 
-    int paddle_x = (frame_counter / 2) % (SCREEN_WIDTH - 8);
-    mvprintw(25, paddle_x + 1, "══════");
-
-   
-    // now the menu appears (delayed)
-    if (frame_counter > 70) {
-        int count;
-        const MenuItem *menu = active_menu(game_state, &count);
-        draw_menu_items(menu, count, 18, 17);
-
-        if ((frame_counter / 15) % 3 >= 1) { //blinking text
-            mvprintw(28, 6, "Up / Down to move, Enter to select");
-        }
-    }
-
-    refresh();
+  refresh();
 }
 
 void draw_username(GameState_t game_state, const PlayerStats_t* stats) {
