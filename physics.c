@@ -107,34 +107,46 @@ void ball_update(GameState_t* game_state, PlayerStats_t* stats,
         objects->brick[brick_y][brick_x].health -= 1;
 
         // start collision test
-        // 1. Calculate previous positions and the exact boundaries of the brick
-        float px = ball->x - ball->vx;
-        float py = ball->y - ball->vy;
-        int bx = 1 + brick_x * BRICK_WIDTH;
-        int by = 1 + brick_y * BRICK_HEIGHT;
 
-        // 2. Validate hits: Only trigger if the ball came from outside AND is moving towards the brick
-        int hit_x = (px < bx && ball->vx > 0) || (px > bx + BRICK_WIDTH - 1 && ball->vx < 0);
-        int hit_y = (py < by && ball->vy > 0) || (py > by + BRICK_HEIGHT - 1 && ball->vy < 0);
+        float previous_x = ball->x - ball->vx;
+        float previous_y = ball->y - ball->vy;
+        int left_brick_limit = 1 + brick_x * BRICK_WIDTH;
+        int right_brick_limit = left_brick_limit + BRICK_WIDTH - 1;
+        int top_brick_limit = 1 + brick_y * BRICK_HEIGHT;
+        int bottom_brick_limit = top_brick_limit + BRICK_HEIGHT - 1;
+
+
+        int hit_x = (previous_x < left_brick_limit && ball->vx > 0) || (previous_x > right_brick_limit && ball->vx < 0);
+        int hit_y = (previous_y < top_brick_limit && ball->vy > 0) || (previous_y > bottom_brick_limit && ball->vy < 0);
 
         if (hit_x ^ hit_y) {
-          // Exclusive OR: Pure side or pure top/bottom bounce
+          // = side or pure top/bottom bounce
           if (hit_x) ball->vx *= -1;
           if (hit_y) ball->vy *= -1;
         }
         else if (hit_x && hit_y) {
-          // True corner hit: The ball is actively moving towards the corner on both axes
-          int ax = brick_x + (px < bx ? -1 : 1);
-          int ay = brick_y + (py < by ? -1 : 1);
+          // corner hit: The ball is actively moving towards the corner on both axes
+          int adjacent_horizontal_brick = brick_x + (previous_x < left_brick_limit ? -1 : 1);
+          int adjacent_vertical_brick = brick_y + (previous_y < top_brick_limit ? -1 : 1);
 
-          // Safely extract adjacent brick health (defaults to 0 if outside the grid)
-          int h_hp = (ax >= 0 && ax < BRICK_COLUMNS) ? objects->brick[brick_y][ax].health : 0;
-          int v_hp = (ay >= 0 && ay < objects->rows_for_level) ? objects->brick[ay][brick_x].health : 0;
+          // adjacent brick health. If its outside the screen, set to 0.
+          int adj_h_brick_hp = (adjacent_horizontal_brick >= 0 && adjacent_horizontal_brick < BRICK_COLUMNS) ? objects->brick[brick_y][adjacent_horizontal_brick].health : 0;
+          int adj_v_brick_hp = (adjacent_vertical_brick >= 0 && adjacent_vertical_brick < objects->rows_for_level) ? objects->brick[adjacent_vertical_brick][brick_x].health : 0;
 
-          // Truth table reduction for adjacent physics resolution
-          if (h_hp == 0 || v_hp > 0) ball->vx *= -1;
-          if (v_hp == 0 || h_hp > 0) ball->vy *= -1;
-        }
+          if (adj_h_brick_hp == 0 && adj_v_brick_hp == 0) {//corner available for 180 bounce
+            ball->vx = -ball->vx;
+            ball->vy = -ball->vy;
+          }
+          else if (adj_h_brick_hp > 0 && adj_v_brick_hp == 0) {//bottom or top free, but not the side. 90 bounce
+            ball->vy = -ball->vy;
+          }
+          else if (adj_v_brick_hp > 0 && adj_h_brick_hp == 0) {//side free, but not the bottom or top. 90 bounce
+            ball->vx = -ball->vx;
+          }
+          else {//it can squeeze through the gap of the bricks and break the brick surrounded. 180 bounce.
+            ball->vx = -ball->vx;
+            ball->vy = -ball->vy;
+          }
       }
     }
   }
