@@ -5,7 +5,7 @@
 
 #define SCREEN_WIDTH 50
 #define SCREEN_HEIGHT 48
-#define TIMER_BOX_WIDTH 16
+
 
 #define PADDLE_WIDTH_0 12
 
