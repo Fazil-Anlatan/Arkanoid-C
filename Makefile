@@ -33,6 +33,6 @@ physics.o: physics.c physics.h established_parameters.h initialization_structure
 render.o: render.c render.h established_parameters.h 
 	gcc render.c -c $(CFLAGS)
 
-clear:
+clean:
 	$(RM) $(EXE) $(OBJS)
 	# $(RM) should adapt to the OS being used, no need for if statement. This deletes the executable and the object files.
