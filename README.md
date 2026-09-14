@@ -4,6 +4,7 @@ Arkanoid clone written in C
 LINUX/MAC: works without any extra requirement
 
 Just run the makefile as normal and should work
+$make
 
 For developer tools use $make DEV=1
 This enables the use of 'l' and 'L' for skipping levels
