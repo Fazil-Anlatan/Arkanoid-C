@@ -147,6 +147,7 @@ void ball_update(GameState_t* game_state, PlayerStats_t* stats,
             ball->vx = -ball->vx;
             ball->vy = -ball->vy;
           }
+        }
       }
     }
   }
