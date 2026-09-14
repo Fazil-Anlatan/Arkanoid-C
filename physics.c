@@ -191,16 +191,14 @@ void activate_powerup(PlayerStats_t* stats, Objects_t* objects, Timer_t* timer,
 
             int points_earned =
                 score_calc(stats, objects, j, i,
-                           &objects->ball[0]);  // Note: check your param order
-                                                // (x, y) vs (y, x)
+                           &objects->ball[0]);  
 
             stats->score += points_earned;
             stats->level_score += points_earned;
           }
         }
       }
-      objects->total_active_bricks =
-          0;  // Is this needed? Maybe not. For safety?
+      objects->total_active_bricks = 0;  
       break;
 
     case DISRUPTION:
