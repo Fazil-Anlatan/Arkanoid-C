@@ -3,6 +3,7 @@
 #include "game_data.h"
 #include "initialization_structures.h"
 
+#define TIMER_BOX_WIDTH 16
 #define TITLE_ROWS 5
 #define TITLE_WIDTH 34
 #define GAME_OVER_ART_ROWS 5
