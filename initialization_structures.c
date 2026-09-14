@@ -18,7 +18,7 @@ void gameInicialization(PlayerStats_t* stats, Objects_t* objects,
 }
 
 void gameInicialization_ball(PlayerStats_t* stats,
-                             Objects_t* objects) {  // isn't finished yed
+                             Objects_t* objects) {  
   time_t now = time(NULL);
   int i, j;
   float ball_speed_for_level = INITIAL_BALL_SPEED;
@@ -40,15 +40,14 @@ void gameInicialization_ball(PlayerStats_t* stats,
   objects->ball[0].vx =
       ((now % 5) + 1) / 10.0f;  // x velocity between 0.1 and 0.5
 
-  // Total initial velocity is a vector of 0.75
+  // Total initial velocity is a vector of 0.65
   // Calculated using the pythagorean theorem.
   //
   // After, the velocity will increase with the level
   // and will also be calculated with pythagoras.
   objects->ball[0].vy =
       -(sqrt(pow(ball_speed_for_level, 2) -
-             pow(objects->ball[0].vx, 2)));  // We need to make another constant
-                                             // for the length of the vector.
+             pow(objects->ball[0].vx, 2)));  
 
   // random directions
   if (now % 2 == 1) {
