@@ -1,6 +1,6 @@
 #include <locale.h>  //needed in linux for special characters
 #include <stdio.h>
-#include <stdlib.h>  //srand() was not working in linnux without this
+#include <stdlib.h>  
 #include <time.h>
 
 #include "application_state.h"
