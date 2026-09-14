@@ -38,11 +38,14 @@
 #include <unistd.h>
 #define sleep_ms(ms) usleep((ms) * 1000)  // unifies sleep functions
 #endif
-#endif
 
-// can we add developer tools here?
+//developer tools here
 #ifdef DEV
 #define DEVELOPER_TOOLS_ACTIVE 1
 #else
 #define DEVELOPER_TOOLS_ACTIVE 0
 #endif
+
+#endif
+
+
